@@ -3,7 +3,7 @@ killGoblins
 
 Projeto da disciplina de programação 1 (transferido de outro repositório).
 
-O projeto foi feito com Allegro 4, e usou o grabber para gerar datafiles.
+O projeto foi feito no CodeBlocks com Allegro 4, e usou o grabber para gerar datafiles.
 
 O jogo completo compilado em um ambiente windows 8 x64 pode ser encontrado [aqui](https://mega.co.nz/#!D8Q1CBAB!I3jIlkg7xiJ6gjyST9-bPw1Uvw4EMxviR4A-zlSTUDU).
 
