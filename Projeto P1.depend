@@ -1,0 +1,176 @@
+# depslib dependency file v1.0
+1388509185 source:c:\users\j.carlos\documents\p1\projeto p1\basico.c
+	"basico.h"
+	"controle.h"
+	"mapa.h"
+	"eventos.h"
+
+1388584178 c:\users\j.carlos\documents\p1\projeto p1\basico.h
+	<stdio.h>
+	<allegro.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+	"imagensFile.h"
+	"musicasFile.h"
+	"efeitosFile.h"
+	"fontesFile.h"
+
+1388372094 c:\users\j.carlos\documents\p1\projeto p1\controle.h
+	"basico.h"
+
+1388372094 source:c:\users\j.carlos\documents\p1\projeto p1\controle.c
+	"controle.h"
+
+1388460767 source:c:\users\j.carlos\documents\p1\projeto p1\criaturas.c
+	"criaturas.h"
+
+1388442934 c:\users\j.carlos\documents\p1\projeto p1\criaturas.h
+	"basico.h"
+	"controle.h"
+	"mapa.h"
+
+1388461355 c:\users\j.carlos\documents\p1\projeto p1\mapa.h
+	"basico.h"
+
+1388516986 source:c:\users\j.carlos\documents\p1\projeto p1\eventos.c
+	"eventos.h"
+
+1388513776 c:\users\j.carlos\documents\p1\projeto p1\eventos.h
+	"basico.h"
+	"controle.h"
+	"item.h"
+	"criaturas.h"
+	"mapa.h"
+
+1388461399 source:c:\users\j.carlos\documents\p1\projeto p1\item.c
+	"item.h"
+
+1388461124 c:\users\j.carlos\documents\p1\projeto p1\item.h
+	"basico.h"
+	"criaturas.h"
+	"mapa.h"
+
+1388513776 source:c:\users\j.carlos\documents\p1\projeto p1\main.c
+	"basico.h"
+	"mapa.h"
+	"criaturas.h"
+	"controle.h"
+	"item.h"
+	"eventos.h"
+
+1388442138 source:c:\users\j.carlos\documents\p1\projeto p1\mapa.c
+	"mapa.h"
+
+1388037018 source:e:\dropbox\projeto p1 jirlean\basico.c
+	"basico.h"
+	"controle.h"
+
+1388037018 e:\dropbox\projeto p1 jirlean\basico.h
+	<stdio.h>
+	<allegro.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+
+1388037018 e:\dropbox\projeto p1 jirlean\controle.h
+	"basico.h"
+
+1388037016 source:e:\dropbox\projeto p1 jirlean\controle.c
+	"controle.h"
+
+1388083490 source:e:\dropbox\projeto p1 jirlean\criaturas.c
+	"criaturas.h"
+
+1388083139 e:\dropbox\projeto p1 jirlean\criaturas.h
+	"basico.h"
+	"controle.h"
+	"mapa.h"
+
+1388037016 e:\dropbox\projeto p1 jirlean\mapa.h
+	"basico.h"
+
+1388037016 source:e:\dropbox\projeto p1 jirlean\eventos.c
+	"eventos.h"
+	"controle.h"
+
+1388037018 e:\dropbox\projeto p1 jirlean\eventos.h
+	"basico.h"
+
+1388081520 source:e:\dropbox\projeto p1 jirlean\item.c
+	"item.h"
+
+1388081213 e:\dropbox\projeto p1 jirlean\item.h
+	"basico.h"
+
+1388037018 source:e:\dropbox\projeto p1 jirlean\mapa.c
+	"mapa.h"
+
+1388083158 source:e:\dropbox\projeto p1 jirlean\main.c
+	"basico.h"
+	"mapa.h"
+	"criaturas.h"
+	"controle.h"
+	"item.h"
+	"eventos.h"
+
+1387888259 source:c:\users\cliente\projetop1\projeto p1\basico.c
+	"basico.h"
+	"controle.h"
+
+1388106236 c:\users\cliente\projetop1\projeto p1\basico.h
+	<stdio.h>
+	<allegro.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+
+1387857819 c:\users\cliente\projetop1\projeto p1\controle.h
+	"basico.h"
+
+1387857818 source:c:\users\cliente\projetop1\projeto p1\controle.c
+	"controle.h"
+
+1387888259 source:c:\users\cliente\projetop1\projeto p1\eventos.c
+	"eventos.h"
+	"controle.h"
+
+1387888259 c:\users\cliente\projetop1\projeto p1\eventos.h
+	"basico.h"
+
+1388102783 source:c:\users\cliente\projetop1\projeto p1\item.c
+	"item.h"
+
+1388102783 c:\users\cliente\projetop1\projeto p1\item.h
+	"basico.h"
+
+1388102783 source:c:\users\cliente\projetop1\projeto p1\main.c
+	"basico.h"
+	"mapa.h"
+	"criaturas.h"
+	"controle.h"
+	"item.h"
+	"eventos.h"
+
+1388075120 c:\users\cliente\projetop1\projeto p1\mapa.h
+	"basico.h"
+
+1388102783 c:\users\cliente\projetop1\projeto p1\criaturas.h
+	"basico.h"
+	"controle.h"
+	"mapa.h"
+
+1388075120 source:c:\users\cliente\projetop1\projeto p1\mapa.c
+	"mapa.h"
+
+1388108741 source:c:\users\cliente\projetop1\projeto p1\criaturas.c
+	"criaturas.h"
+
+1388508690 c:\users\j.carlos\documents\p1\projeto p1\imagensfile.h
+
+1388438084 c:\users\j.carlos\documents\p1\projeto p1\musicasfile.h
+
+1388437656 c:\users\j.carlos\documents\p1\projeto p1\efeitosfile.h
+
+1388438284 c:\users\j.carlos\documents\p1\projeto p1\fontesfile.h
+
