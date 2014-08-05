@@ -10,11 +10,9 @@
 
 int main()
 {
-    Attributes *player;
-    player = new_attr();
-    player->speed = 5;
-    printf("%.2f\n",player->speed);
-    desaloc_attr(player);
+    Ship *player = new_ship(4, 7);
+    printPower(player);
+    desaloc_ship(player);
 
     return 0;
 }
