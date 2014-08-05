@@ -10,9 +10,9 @@
 
 int main()
 {
-    Ship *player = new_ship(4, 7);
-    printPower(player);
-    desaloc_ship(player);
+    Player_ship *player = new_player_ship(6, 7);
+    printPower(getBase(player));
+    desaloc_player_ship(player);
 
     return 0;
 }

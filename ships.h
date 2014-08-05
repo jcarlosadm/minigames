@@ -14,16 +14,18 @@
  * Tipos
  *******************************************/
 
-// tipo Ship que descreve uma nave básica
+// nave que é usada por inimigos e que serve como base para o player
 typedef struct ship Ship;
 
+// nave usada pelo player
+typedef struct player_ship Player_ship;
 
 /*******************************************
  * Construtores - alocação de memória
  *******************************************/
 
 /*
- * Gera Ship
+ * Gera nave base, usada pelos inimigos
  * Aloca memória e define os atributos da nave
  *
  * Parâmetros:
@@ -32,12 +34,22 @@ typedef struct ship Ship;
  */
 Ship* new_ship(int power, float speed);
 
+/*
+ * Nave usada pelo Player
+ * Aloca memória e define os atributos da nave
+ *
+ * Parâmetros:
+ * power : nível de poder de tiro da nave
+ * speed : velocidade da nave
+ */
+Player_ship* new_player_ship(int power, float speed);
+
 /*************************************************
  * Destrutores - desalocação de memória
  *************************************************/
 
 /*
- * Desaloca nave e seus atributos
+ * Desaloca nave base/inimiga
  *
  * Parâmetros:
  * ship : nave a ser desalocada
@@ -45,16 +57,43 @@ Ship* new_ship(int power, float speed);
 
 void desaloc_ship(Ship* ship);
 
+/*
+ * Desaloca nave player
+ *
+ * Parâmetros:
+ * ship : nave do player
+ */
+void desaloc_player_ship(Player_ship* ship);
+
 /*************************************************
- * Funções comuns das naves
+ * Funções comuns para todas as naves
  *************************************************/
 
 /*
+ * Observação: para usar essas funções com a nave do jogador, onde houver
+ * o tipo Ship, use a função getBase()
+ */
+
+/*
  * Imprime poder de tiro de uma nave
+ * Se a nave for do jogador, use a função getBase() no lugar de ship
  *
  * Parâmetros:
  * ship : nave a ser verificado o poder de tiro
  */
 void printPower(Ship* ship);
+
+/**************************************************
+ * Funções somente para o player
+ *************************************************/
+
+/*
+ * Pega um ponteiro Player_ship e retorna um ponteiro para Ship
+ * Usada nas funções comuns para todas as naves
+ *
+ * Parâmetros:
+ * ship : nave do Player
+ */
+Ship* getBase(Player_ship* ship);
 
 #endif /* SHIPS_H_ */
