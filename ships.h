@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <allegro5/allegro.h>
 
 /*******************************************
  * Tipos
@@ -25,14 +26,15 @@ typedef struct player_ship Player_ship;
  *******************************************/
 
 /*
- * Gera nave base, usada pelos inimigos
+ * Gera nave base, usada pelos inimigos ou player
  * Aloca memória e define os atributos da nave
  *
  * Parâmetros:
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-Ship* new_ship(int power, float speed);
+Ship* new_ship(int power, float speed,float position_x,
+        float position_y, float width, float height,ALLEGRO_DISPLAY* window);
 
 /*
  * Nave usada pelo Player
@@ -42,7 +44,8 @@ Ship* new_ship(int power, float speed);
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-Player_ship* new_player_ship(int power, float speed);
+Player_ship* new_player_ship(int power, float speed,float position_x,
+        float position_y, float width, float height,ALLEGRO_DISPLAY* window);
 
 /*************************************************
  * Destrutores - desalocação de memória
@@ -50,6 +53,8 @@ Player_ship* new_player_ship(int power, float speed);
 
 /*
  * Desaloca nave base/inimiga
+ * (editor desse módulo): desaloque nave base ou inimiga
+ * (Outros): Use para desalocar nave inimiga
  *
  * Parâmetros:
  * ship : nave a ser desalocada
@@ -82,6 +87,8 @@ void desaloc_player_ship(Player_ship* ship);
  * ship : nave a ser verificado o poder de tiro
  */
 void printPower(Ship* ship);
+
+void draw_ship(Ship* ship);
 
 /**************************************************
  * Funções somente para o player

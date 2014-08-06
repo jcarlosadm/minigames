@@ -23,14 +23,17 @@ int main()
         return -1;
     }
 
-    al_clear_to_color(al_map_rgb_f(255,255,255));
-    al_flip_display();
+    al_clear_to_color(al_map_rgb_f(0,255,255));
 
-    Player_ship *player = new_player_ship(6, 7);
+
+    Player_ship *player = new_player_ship(6, 7,400,200,32,32,window);
     printPower(getBase(player));
-    desaloc_player_ship(player);
+    draw_ship(getBase(player));
 
+    al_flip_display();
     al_rest(10.0);
+
+    desaloc_player_ship(player);
     al_destroy_display(window);
 
     return 0;
