@@ -6,6 +6,7 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
+// bibliotecas básicas
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro.h>
@@ -30,7 +31,7 @@ Window_game *window;
 
 /*
  * cria a janela de jogo
- * Aloca memória e retorna um ponteiro para Window_game
+ * Aloca memória no objeto global window, do tipo Window_game
  */
 void create_window_game();
 
