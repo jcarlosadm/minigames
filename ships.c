@@ -64,10 +64,15 @@ void initialize_loc_dim(Location* loc, Dimension* dim, float position_x,
 
 // aloca nave inimiga ou base para o player
 Ship* new_ship(int power, float speed,float position_x,
-        float position_y, float width, float height,
-        ALLEGRO_DISPLAY* window){
+        float position_y, float width, float height){
     // aloca nave com malloc
     Ship *ship_ = (Ship*) malloc (sizeof(Ship));
+
+    if(ship_ == NULL){
+        fprintf(stderr, "falha ao alocar objeto Ship\n");
+        return NULL;
+    }
+
     // define os atributos
     build_Attr(&(ship_->attr),power,speed);
     // define localização e dimensões
@@ -78,7 +83,7 @@ Ship* new_ship(int power, float speed,float position_x,
 
     al_set_target_bitmap(ship_->image);
     al_clear_to_color(al_map_rgb(255, 100, 155));
-    al_set_target_bitmap(al_get_backbuffer(window));
+    set_draw_current_window_game();
 
     // retorna ponteiro para a nave
     return ship_;
@@ -86,13 +91,24 @@ Ship* new_ship(int power, float speed,float position_x,
 
 // aloca nave do player
 Player_ship* new_player_ship(int power, float speed,float position_x,
-        float position_y, float width, float height,ALLEGRO_DISPLAY* window){
+        float position_y, float width, float height){
     // aloca nave com malloc
     Player_ship *ship = (Player_ship*) malloc (sizeof(Player_ship));
 
+    if(ship == NULL){
+        fprintf(stderr, "falha ao alocar objeto Player_ship\n");
+        return NULL;
+    }
+
     // constrói a base
     ship->base = new_ship(power, speed,position_x,
-            position_y, width, height,window);
+            position_y, width, height);
+
+    if(ship->base == NULL){
+        fprintf(stderr, "falha ao alocar base de Player_ship\n");
+        free(ship);
+        return NULL;
+    }
 
     // retorna player
     return ship;

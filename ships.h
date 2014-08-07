@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro.h>
+#include "window.h"
 
 /*******************************************
  * Tipos
@@ -34,7 +35,7 @@ typedef struct player_ship Player_ship;
  * speed : velocidade da nave
  */
 Ship* new_ship(int power, float speed,float position_x,
-        float position_y, float width, float height,ALLEGRO_DISPLAY* window);
+        float position_y, float width, float height);
 
 /*
  * Nave usada pelo Player
@@ -45,7 +46,7 @@ Ship* new_ship(int power, float speed,float position_x,
  * speed : velocidade da nave
  */
 Player_ship* new_player_ship(int power, float speed,float position_x,
-        float position_y, float width, float height,ALLEGRO_DISPLAY* window);
+        float position_y, float width, float height);
 
 /*************************************************
  * Destrutores - desalocação de memória

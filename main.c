@@ -5,36 +5,69 @@
 
 #include <stdio.h>
 #include <allegro5/allegro.h>
+#include "window.h"
 #include "ships.h"
+
+int init();
+void finish_game(Player_ship* player);
 
 int main()
 {
-    // ponteiro para janela
-    ALLEGRO_DISPLAY *window = NULL;
+    // variáveis locais
+    Player_ship *player;
 
-    if(!al_init()){
-        fprintf(stderr, "falha ao iniciar o allegro\n");
-        return -1;
+    if(!init()){
+        fprintf(stderr, "falha ao inicializar\n");
+        exit(EXIT_FAILURE);
     }
 
-    window = al_create_display(640,480);
-    if(!window){
-        fprintf(stderr, "falha ao criar janela\n");
-        return -1;
+    player = new_player_ship(6, 7,400,200,32,32);
+    if(player == NULL){
+        finish_game(player);
+        exit(EXIT_FAILURE);
     }
 
     al_clear_to_color(al_map_rgb_f(0,255,255));
 
-
-    Player_ship *player = new_player_ship(6, 7,400,200,32,32,window);
     printPower(getBase(player));
     draw_ship(getBase(player));
 
     al_flip_display();
     al_rest(10.0);
 
-    desaloc_player_ship(player);
-    al_destroy_display(window);
+    finish_game(player);
 
-    return 0;
+    return EXIT_SUCCESS;
+}
+
+int init(){
+    // guarda true se sucesso e false se fracasso
+    int success = true;
+
+    // ponteiro para janela global começa com NULL
+    window = NULL;
+
+    if(!al_init()){
+        fprintf(stderr, "falha ao iniciar o allegro\n");
+        success = false;
+    }
+
+    create_window_game();
+    if(!window){
+        fprintf(stderr, "falha ao criar janela\n");
+        success = false;
+    }
+
+    if(!success){
+        if(!window) desaloc_window();
+    }
+
+    return success;
+}
+
+void finish_game(Player_ship* player){
+
+    if(!player) desaloc_player_ship(player);
+
+    if(!window) desaloc_window();
 }

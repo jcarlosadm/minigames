@@ -6,12 +6,12 @@ OBJ_DIR= objects
 BIN_DIR= bin
 
 # coloque aqui a lista de objetos do programa
-_OBJ= ships.o main.o
+_OBJ= window.o ships.o main.o
 
 # as flags e opções usadas
 CC= gcc
 CFLAGS= -c -Wall
-ALLEGROFLAG= -lallegro -lallegro_image
+ALLEGROFLAGS= -lallegro -lallegro_image
 
 # nome do binário gerado
 BIN_NAME= main
@@ -36,7 +36,7 @@ makedir_bin:
 	$(MK_DIR) $(BIN_DIR)
 
 $(BIN_NAME): $(OBJ)
-	$(CC) -o $(BIN_DIR)/$@ $^ $(ALLEGROFLAG)
+	$(CC) -o $(BIN_DIR)/$@ $^ $(ALLEGROFLAGS)
 
 $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) $^ -o $@
