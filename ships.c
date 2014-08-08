@@ -124,6 +124,7 @@ void desaloc_ship(Ship* ship){
     al_destroy_bitmap(ship->image);
     // desaloca com free
     free(ship);
+    puts("desalocado ship");
 }
 
 // desaloca nave player
@@ -132,6 +133,7 @@ void desaloc_player_ship(Player_ship* ship){
     desaloc_ship(ship->base);
     // desaloca com free
     free(ship);
+    puts("desalocado ship_player");
 }
 
 /*************************************************
