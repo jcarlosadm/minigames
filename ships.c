@@ -120,20 +120,26 @@ Player_ship* new_player_ship(int power, float speed,float position_x,
 
 // desaloca nave inimiga
 void desaloc_ship(Ship* ship){
-    // desaloca imagem
-    al_destroy_bitmap(ship->image);
-    // desaloca com free
-    free(ship);
-    puts("desalocado ship");
+
+    if(ship){
+        // desaloca imagem
+        al_destroy_bitmap(ship->image);
+        // desaloca com free
+        free(ship);
+        puts("desalocado ship");
+    }
+
 }
 
 // desaloca nave player
 void desaloc_player_ship(Player_ship* ship){
-    // desaloca base
-    desaloc_ship(ship->base);
-    // desaloca com free
-    free(ship);
-    puts("desalocado ship_player");
+    if(ship){
+        // desaloca base
+        desaloc_ship(ship->base);
+        // desaloca com free
+        if(ship) free(ship);
+        puts("desalocado ship_player");
+    }
 }
 
 /*************************************************
@@ -157,4 +163,12 @@ void draw_ship(Ship* ship){
 //Pega a nave do jogador e retorna um ponteiro para a sua base
 Ship* getBase(Player_ship* ship){
     return ship->base;
+}
+
+void update_player(Player_ship* ship){
+    if(get_mouse_move_state()){
+        ship->base->location.position_x = get_mouse_x()-16;
+        ship->base->location.position_y = get_mouse_y()-16;
+    }
+
 }

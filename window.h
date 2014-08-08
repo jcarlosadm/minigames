@@ -55,7 +55,7 @@ Window_game *window;
  * cria a janela de jogo
  * Aloca memória no objeto global window, do tipo Window_game
  */
-void create_window_game();
+int create_window_game();
 
 /**************************************************
  * Destrutores
@@ -119,17 +119,10 @@ void set_draw_current_window_game();
 
 int set_mouse_cursor_window();
 
-/*
- * Registra eventos da janela
- */
-void set_events_window(ALLEGRO_EVENT_QUEUE* event_queue);
-
-ALLEGRO_DISPLAY* get_display_window();
-
 int generate_event_queue_window();
 
 void register_event_queue_window();
 
-void verifying_event_queue_window();
+void check_event_queue_window();
 
 #endif /* WINDOW_H_ */

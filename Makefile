@@ -6,7 +6,7 @@ OBJ_DIR= objects
 BIN_DIR= bin
 
 # coloque aqui a lista de objetos do programa
-_OBJ= window.o ships.o main.o
+_OBJ= controls.o window.o ships.o main.o
 
 # as flags e opções usadas
 CC= gcc

@@ -32,14 +32,14 @@ typedef struct window_game {
  **************************************************/
 
 // aloca memória para objeto global window, do tipo Window_game
-void create_window_game(){
+int create_window_game(){
     // aloca memória
     window = (Window_game*)malloc(sizeof(Window_game));
 
     // se a alocação falhar, sai da função
-    if(window == NULL){
+    if(!window){
         fprintf(stderr, "falha ao alocar objeto Window_Game\n");
-        return;
+        return false;
     }
 
     // configura variáveis de controle
@@ -55,12 +55,12 @@ void create_window_game(){
         fprintf(stderr, "falha ao criar janela\n");
         free(window);
         window=NULL;
-        return;
+        return false;
     }
 
     // sai da função com sucesso
     fprintf(stderr, "janela criada com sucesso\n");
-    return;
+    return true;
 }
 
 /**************************************************
@@ -69,10 +69,13 @@ void create_window_game(){
 
 // desaloca window
 void desaloc_window(){
-    al_destroy_display(window->window);
-    if(window->event_queue_window) al_destroy_event_queue(window->event_queue_window);
-    free(window);
-    puts("desalocado window");
+    if(window){
+        al_destroy_display(window->window);
+        al_destroy_event_queue(window->event_queue_window);
+        free(window);
+        puts("desalocado window");
+    }
+
 }
 
 /**************************************************
@@ -123,16 +126,10 @@ void set_draw_current_window_game(){
 int set_mouse_cursor_window(){
     if (al_set_system_mouse_cursor(window->window, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT))
         return true;
-    else
+    else{
+        fprintf(stderr, "Falha ao atribuir ponteiro do mouse.\n");
         return false;
-}
-
-void set_events_window(ALLEGRO_EVENT_QUEUE* event_queue){
-    al_register_event_source(event_queue, al_get_display_event_source(window->window));
-}
-
-ALLEGRO_DISPLAY* get_display_window(){
-    return window->window;
+    }
 }
 
 int generate_event_queue_window(){
@@ -149,7 +146,7 @@ void register_event_queue_window(){
     al_register_event_source(window->event_queue_window, al_get_display_event_source(window->window));
 }
 
-void verifying_event_queue_window(){
+void check_event_queue_window(){
     ALLEGRO_EVENT event;
     while (!al_is_event_queue_empty(window->event_queue_window)){
 

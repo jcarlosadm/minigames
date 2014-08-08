@@ -13,6 +13,7 @@
 #include <allegro5/allegro.h>
 // módulo do jogo
 #include "window.h"
+#include "controls.h"
 
 /*******************************************
  * Tipos
@@ -105,5 +106,7 @@ void draw_ship(Ship* ship);
  * ship : nave do Player
  */
 Ship* getBase(Player_ship* ship);
+
+void update_player(Player_ship* ship);
 
 #endif /* SHIPS_H_ */
