@@ -22,6 +22,8 @@ typedef struct window_game {
     // controla a execução da janela de acordo com os frames por segundo configurados
     int tick;
 
+    int current_window;
+
     ALLEGRO_EVENT_QUEUE *event_queue_window;
 }Window_game;
 
@@ -44,6 +46,7 @@ void create_window_game(){
     window->exit = false;
     window->redraw = false;
     window->tick = true;
+    window->current_window = WINDOW_TITLE_MAIN;
 
     // tenta alocar memória para o membro ALLEGRO_DISPLAY, de window
     window->window = al_create_display(WINDOW_WIDTH,WINDOW_HEIGHT);

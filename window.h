@@ -22,6 +22,17 @@
 // Quantidade de frames por segundo
 #define FPS_GAME 60
 
+// Enumeradores da tela atual
+enum{
+    WINDOW_TITLE_MAIN,
+    WINDOW_TITLE_START,
+    WINDOW_TITLE_OPTIONS,
+    WINDOW_TITLE_EXIT,
+    WINDOW_GAME_MAIN,
+    WINDOW_GAME_MENU,
+    WINDOW_GAME_PAUSE
+};
+
 /**************************************************
  * Estruturas
  **************************************************/
