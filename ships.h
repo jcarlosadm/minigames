@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <allegro5/allegro.h>
 // módulo do jogo
+#include "graphics.h"
 #include "window.h"
 #include "controls.h"
 

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <allegro5/allegro.h>
 // módulos do jogo
+#include "graphics.h"
 #include "window.h"
 #include "ships.h"
 #include "controls.h"
@@ -179,6 +180,8 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
         success = false;
     }
 
+    al_init_image_addon();
+
     *timer = (ALLEGRO_TIMER*) al_create_timer(1.0 / FPS_GAME);
     if(!*timer) {
         fprintf(stderr, "falha ao iniciar o timer\n");
@@ -204,6 +207,8 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
     // tenta inicializar o mouse
     if(!start_mouse()) success = false;
 
+    if(!create_atlas()) success = false;
+
     // se não for bem sucedido em alguma inicialização, desaloca o que foi alocado
     if(!success){
         if(*timer) al_destroy_timer(*timer);
@@ -222,6 +227,7 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
         al_register_event_source(*event_queue_time, al_get_timer_event_source(*timer));
         // registra eventos dos controles
         register_event_queue_controls();
+
 
     }
 
@@ -245,5 +251,7 @@ void finish_game(Player_ship** player, ALLEGRO_TIMER **timer,
     if(*event_queue_time) al_destroy_event_queue(*event_queue_time);
     // desaloca janela
     desaloc_mouse();
+    desaloc_atlas();
     desaloc_window();
+
 }

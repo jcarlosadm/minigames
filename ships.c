@@ -88,16 +88,17 @@ Ship* new_ship(int power, float speed,float position_x,
     initialize_loc_dim(&(ship_->location),&(ship_->dimension),position_x,
             position_y,width, height);
     // cria uma imagem bitmap
-    ship_->image = al_create_bitmap(32,32);
+
+    ship_->image = create_bitmap_from_atlas("playerShip1_blue.png");
 
     ship_->fire.active = false;
     ship_->fire.image = NULL;
     ship_->fire.x = 0;
     ship_->fire.y = 0;
 
-    al_set_target_bitmap(ship_->image);
-    al_clear_to_color(al_map_rgb(255, 100, 155));
-    set_draw_current_window_game();
+    //al_set_target_bitmap(ship_->image);
+    //al_clear_to_color(al_map_rgb(255, 100, 155));
+    //set_draw_current_window_game();
 
     // retorna ponteiro para a nave
     return ship_;
@@ -187,13 +188,15 @@ Ship* getBase(Player_ship* ship){
 void player_fire(Player_ship* ship){
     if(!ship->base->fire.active){
         ship->base->fire.active = true;
-        ship->base->fire.image = al_create_bitmap(16,16);
-        ship->base->fire.x = ship->base->location.position_x + 8;
-        ship->base->fire.y = ship->base->location.position_y - 16;
+        ship->base->fire.image = create_bitmap_from_atlas("laserBlue03.png");
+        ship->base->fire.x = ship->base->location.position_x + (al_get_bitmap_width(ship->base->image)/2)
+                - al_get_bitmap_width(ship->base->fire.image)/2;
+        ship->base->fire.y = ship->base->location.position_y -
+                (al_get_bitmap_height(ship->base->fire.image));
 
-        al_set_target_bitmap(ship->base->fire.image);
-        al_clear_to_color(al_map_rgb(55, 100, 175));
-        set_draw_current_window_game();
+        //al_set_target_bitmap(ship->base->fire.image);
+        //al_clear_to_color(al_map_rgb(55, 100, 175));
+        //set_draw_current_window_game();
     }
 }
 
@@ -211,8 +214,8 @@ void update_player_fire(Player_ship* ship){
 void update_player(Player_ship* ship){
 
     if(get_mouse_move_state()){
-        ship->base->location.position_x = get_mouse_x()-16;
-        ship->base->location.position_y = get_mouse_y()-16;
+        ship->base->location.position_x = get_mouse_x()-(al_get_bitmap_width(ship->base->image)/2);
+        ship->base->location.position_y = get_mouse_y()-(al_get_bitmap_height(ship->base->image)/2);
     }
 
     if(mouseIsClicked())
