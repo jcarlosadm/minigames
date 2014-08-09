@@ -27,6 +27,13 @@ typedef struct window_game {
     ALLEGRO_EVENT_QUEUE *event_queue_window;
 }Window_game;
 
+/*************************************************
+ * variáveis globais no módulo
+ *************************************************/
+
+// janela principal de jogo
+Window_game *window;
+
 /***************************************************
  * Construtores
  **************************************************/
@@ -59,7 +66,6 @@ int create_window_game(){
     }
 
     // sai da função com sucesso
-    fprintf(stderr, "janela criada com sucesso\n");
     return true;
 }
 

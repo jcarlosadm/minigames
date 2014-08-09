@@ -40,13 +40,6 @@ enum{
 // Estrutura da janela de jogo
 typedef struct window_game Window_game;
 
-/*************************************************
- * variáveis globais
- *************************************************/
-
-// janela principal de jogo
-Window_game *window;
-
 /***************************************************
  * Construtores
  **************************************************/

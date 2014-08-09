@@ -29,11 +29,20 @@ typedef struct dimension{
     float height; // altura
 }Dimension;
 
+typedef struct fire{
+    int active;
+    float x;
+    float y;
+    ALLEGRO_BITMAP *image; // imagem do tiro
+}Fire;
+
 // Descreve a nave, usada pelo inimigo e como base do player
 typedef struct ship{
     Attributes attr; // atributos da nave
     Location location; // coordenadas x e y da nave
     Dimension dimension; // largura e altura da nave
+
+    Fire fire;
 
     ALLEGRO_BITMAP *image; // imagem da nave
 }Ship;
@@ -81,6 +90,11 @@ Ship* new_ship(int power, float speed,float position_x,
     // cria uma imagem bitmap
     ship_->image = al_create_bitmap(32,32);
 
+    ship_->fire.active = false;
+    ship_->fire.image = NULL;
+    ship_->fire.x = 0;
+    ship_->fire.y = 0;
+
     al_set_target_bitmap(ship_->image);
     al_clear_to_color(al_map_rgb(255, 100, 155));
     set_draw_current_window_game();
@@ -124,6 +138,8 @@ void desaloc_ship(Ship* ship){
     if(ship){
         // desaloca imagem
         al_destroy_bitmap(ship->image);
+        if(ship->fire.active)
+            al_destroy_bitmap(ship->fire.image);
         // desaloca com free
         free(ship);
         puts("desalocado ship");
@@ -154,6 +170,9 @@ void printPower(Ship* ship){
 
 void draw_ship(Ship* ship){
     al_draw_bitmap(ship->image, ship->location.position_x, ship->location.position_y, 0);
+    if(ship->fire.active){
+        al_draw_bitmap(ship->fire.image, ship->fire.x, ship->fire.y, 0);
+    }
 }
 
 /**************************************************
@@ -165,10 +184,39 @@ Ship* getBase(Player_ship* ship){
     return ship->base;
 }
 
+void player_fire(Player_ship* ship){
+    if(!ship->base->fire.active){
+        ship->base->fire.active = true;
+        ship->base->fire.image = al_create_bitmap(16,16);
+        ship->base->fire.x = ship->base->location.position_x + 8;
+        ship->base->fire.y = ship->base->location.position_y - 16;
+
+        al_set_target_bitmap(ship->base->fire.image);
+        al_clear_to_color(al_map_rgb(55, 100, 175));
+        set_draw_current_window_game();
+    }
+}
+
+void update_player_fire(Player_ship* ship){
+    if(ship->base->fire.active){
+        ship->base->fire.y -= 6;
+        if(ship->base->fire.y < 5){
+            ship->base->fire.active = false;
+            al_destroy_bitmap(ship->base->fire.image);
+            ship->base->fire.image = NULL;
+        }
+    }
+}
+
 void update_player(Player_ship* ship){
+
     if(get_mouse_move_state()){
         ship->base->location.position_x = get_mouse_x()-16;
         ship->base->location.position_y = get_mouse_y()-16;
     }
 
+    if(mouseIsClicked())
+        player_fire(ship);
+
+    update_player_fire(ship);
 }

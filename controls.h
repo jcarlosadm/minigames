@@ -9,10 +9,9 @@
 #include <allegro5/allegro.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "window.h"
 
 typedef struct mouse_game Mouse_game;
-
-Mouse_game* mouse;
 
 int start_mouse();
 
@@ -39,5 +38,11 @@ int get_mouse_y();
 void set_mouse_coords(int position_x, int position_y);
 
 void register_event_queue_controls();
+
+int mouseIsClicked();
+
+int mouseIsPressed();
+
+int mouseIsReleased();
 
 #endif /* CONTROLS_H_ */

@@ -18,6 +18,8 @@ typedef struct mouse_game{
     int position_y;
 }Mouse_game;
 
+Mouse_game* mouse;
+
 Event_queue_controls* event_queue;
 
 int start_mouse(){
@@ -101,7 +103,6 @@ void check_event_queue_controls(){
 
 void update_controls(){
     mouse->previous_state = mouse->current_state;
-    mouse->current_state = false;
     mouse->move_state = false;
 }
 
@@ -132,4 +133,25 @@ void set_mouse_coords(int position_x, int position_y){
 
 void register_event_queue_controls(){
     al_register_event_source(event_queue->event_queue, al_get_mouse_event_source());
+}
+
+int mouseIsClicked(){
+    if(!(mouse->previous_state) && mouse->current_state)
+        return true;
+    else
+        return false;
+}
+
+int mouseIsPressed(){
+    if(mouse->previous_state && mouse->current_state)
+        return true;
+    else
+        return false;
+}
+
+int mouseIsReleased(){
+    if(mouse->previous_state && !(mouse->current_state))
+        return true;
+    else
+        return false;
 }

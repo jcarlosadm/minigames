@@ -81,7 +81,7 @@ int main()
      */
 
     // aloca memória para o objeto Player_ship
-    player = new_player_ship(6, 7,400,200,32,32);
+    player = new_player_ship(6, 7,get_mouse_x()-16,get_mouse_y()-16,32,32);
     // se falhar, finaliza programa
     if(player == NULL){
         finish_game(&player, &timer,&event_queue_time);
@@ -171,9 +171,6 @@ int main()
 int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
     // guarda true se sucesso e false se fracasso
     int success = true;
-
-    // ponteiro para janela global começa com NULL
-    window = NULL;
 
     // tenta inicializar o allegro
     // se falhar, success recebe false
