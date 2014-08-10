@@ -7,45 +7,43 @@
 #ifndef SHIPS_H_
 #define SHIPS_H_
 
-// bibliotecas básicas
+// Bibliotecas padrão
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// allegro
 #include <allegro5/allegro.h>
+// mini xml
 #include <mxml.h>
 // módulo do jogo
 #include "graphics.h"
 #include "window.h"
 #include "controls.h"
 
+
+/********************************************************
+ * ******************************************************
+ * Constantes
+ * ******************************************************
+ ********************************************************/
+
+/* ------------------------------------------------------
+ * Localização de informações dos objetos do jogo
+ --------------------------------------------------------*/
+// player ship
 #define XML_PLAYER "info/player.xml"
-#define XML_ENEMY "info/enemy.xml"
-#define XML_SHOOTER "info/shoot.xml"
+
+// enemy ship
+#define XML_ENEMIES "info/enemies.xml"
+
+// bullets
+#define XML_BULLETS "info/bullets.xml"
 
 
-/*******************************************
- * Tipos
- *******************************************/
+/****************************************************
+ * Construtores
+ ****************************************************/
 
-// nave que é usada por inimigos e que serve como base para o player
-typedef struct ship Ship;
-
-// nave usada pelo player
-typedef struct player_ship Player_ship;
-
-/*******************************************
- * Construtores - alocação de memória
- *******************************************/
-
-/*
- * Gera nave base, usada pelos inimigos ou player
- * Aloca memória e define os atributos da nave
- *
- * Parâmetros:
- * power : nível de poder de tiro da nave
- * speed : velocidade da nave
- */
-Ship* new_ship(const char *type, const char *subtype);
 
 /*
  * Nave usada pelo Player
@@ -55,64 +53,20 @@ Ship* new_ship(const char *type, const char *subtype);
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-Player_ship* new_player_ship(const char *type, const char *subtype);
+int new_player_ship(const char *subtype);
 
 /*************************************************
  * Destrutores - desalocação de memória
  *************************************************/
 
-/*
- * Desaloca nave base/inimiga
- * (editor desse módulo): desaloque nave base ou inimiga
- * (Outros): Use para desalocar nave inimiga
- *
- * Parâmetros:
- * ship : nave a ser desalocada
- */
-
-void dealloc_ship(Ship* ship);
-
-/*
- * Desaloca nave player
- *
- * Parâmetros:
- * ship : nave do player
- */
-void dealloc_player_ship(Player_ship* ship);
+void dealloc_ships_objects();
 
 /*************************************************
  * Funções comuns para todas as naves
  *************************************************/
 
-/*
- * Observação: para usar essas funções com a nave do jogador, onde houver
- * o tipo Ship, use a função getBase()
- */
+void draw_ships_objects();
 
-/*
- * Imprime poder de tiro de uma nave
- * Se a nave for do jogador, use a função getBase() no lugar de ship
- *
- * Parâmetros:
- * ship : nave a ser verificado o poder de tiro
- */
-void printPower(Ship* ship);
-
-void draw_ship(Ship* ship);
-
-/**************************************************
- * Funções somente para o player
- *************************************************/
-
-/*
- * Pega um ponteiro Player_ship e retorna um ponteiro para Ship
- * Usada nas funções comuns para todas as naves
- *
- * Parâmetros:
- * ship : nave do Player
- */
-Ship* getBase(Player_ship* ship);
-
-void update_player(Player_ship* ship);
+void update_ships_objects();
 
 #endif /* SHIPS_H_ */

@@ -236,6 +236,7 @@ void dealloc_timer(){
         al_destroy_event_queue(timer->event_queue_time);
         // desaloca objeto Timer_game
         free(timer);
+        timer = NULL;
         // informa
         puts("objeto Timer_game desalocado");
     }
@@ -255,6 +256,7 @@ void dealloc_window(){
         al_destroy_event_queue(window->event_queue_window);
         // desaloca memória do objeto Window_game
         free(window);
+        window = NULL;
         // informa
         puts("desalocado window");
 

@@ -166,6 +166,7 @@ void dealloc_mouse(){
     if(mouse){
         // desaloca mouse
         free(mouse);
+        mouse = NULL;
         // informa
         puts("mouse desalocado");
     }

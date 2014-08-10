@@ -102,6 +102,7 @@ void dealloc_atlas(){
         al_destroy_bitmap(atlas->atlas);
         // desaloca objeto atlas
         free(atlas);
+        atlas = NULL;
         // informa
         puts("desalocacao do atlas bem sucedida");
     }

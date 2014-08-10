@@ -19,7 +19,7 @@
 // inicialização
 int basic_alloc();
 // finalização
-void basic_dealloc(Player_ship** player);
+void basic_dealloc();
 
 /*---------------------------------------------------------------------------------
  * main
@@ -30,8 +30,6 @@ int main()
      * variáveis locais
      ------------------------------------------*/
 
-    // jogador
-    Player_ship *player = NULL;
 
     /*------------------------------------------
      * Inicialização
@@ -47,11 +45,9 @@ int main()
      * Alocações de objetos do jogo
      ---------------------------------------------*/
 
-    // aloca memória para o objeto Player_ship
-    player = new_player_ship("player","blue");
-    // se falhar, desaloca memória alocada e finaliza programa
-    if(player == NULL){
-        basic_dealloc(&player);
+    // se falhar e alocar player, desaloca memória alocada e finaliza programa
+    if(!new_player_ship("blue")){
+        basic_dealloc();
         exit(EXIT_FAILURE);
     }
 
@@ -82,8 +78,8 @@ int main()
             // checa eventos dos controles
             check_event_queue_controls();
 
-            // atualizar player
-            update_player(player);
+            // atualizar naves (player e enemies) e tiros
+            update_ships_objects();
 
             /* --------------------------------------------------------
              * Desenho
@@ -92,8 +88,8 @@ int main()
             // limpa a tela
             al_clear_to_color(al_map_rgb_f(0,0,0));
 
-            // desenha player
-            draw_ship(getBase(player));
+            // desenha naves (player e enemies) e tiros
+            draw_ships_objects();
 
             // torna visível
             al_flip_display();
@@ -115,7 +111,7 @@ int main()
      --------------------------------------------*/
 
     // desaloca memória alocada
-    basic_dealloc(&player);
+    basic_dealloc();
 
     // fecha programa com sucesso
     return EXIT_SUCCESS;
@@ -172,14 +168,11 @@ int basic_alloc(){
  * Desalocação de memória dos objetos alocados
  * --------------------------------------------------------------------
  * Desaloca player, desaloca controls, desaloca atlas e window
- * --------------------------------------------------------------------
- * Parâmetros:
- * Player_ship** player : ponteiro para ponteiro Player_ship*
  ----------------------------------------------------------------------*/
-void basic_dealloc(Player_ship** player){
+void basic_dealloc(){
 
-    // desaloca player
-    dealloc_player_ship(*player);
+    // desaloca naves (player e enemies) e tiros
+    dealloc_ships_objects();
     // desaloca controles
     dealloc_controls();
     // desaloca atlas
