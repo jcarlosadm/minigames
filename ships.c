@@ -200,7 +200,7 @@ Player_ship* new_player_ship(const char *type, const char *subtype){
  *************************************************/
 
 // desaloca nave inimiga
-void desaloc_ship(Ship* ship){
+void dealloc_ship(Ship* ship){
 
     if(ship){
         // desaloca imagens
@@ -214,10 +214,10 @@ void desaloc_ship(Ship* ship){
 }
 
 // desaloca nave player
-void desaloc_player_ship(Player_ship* ship){
+void dealloc_player_ship(Player_ship* ship){
     if(ship){
         // desaloca base
-        desaloc_ship(ship->base);
+        dealloc_ship(ship->base);
         // desaloca com free
         free(ship);
         puts("desalocado ship_player");

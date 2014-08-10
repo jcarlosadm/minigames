@@ -13,7 +13,9 @@
 #include <allegro5/allegro.h>
 
 /*************************************************
+ * ***********************************************
  * Constantes
+ * ***********************************************
  *************************************************/
 
 /* --------------------------------------------------------------------------
@@ -51,26 +53,20 @@ enum{
     WINDOW_GAME_PAUSE
 };
 
-/**************************************************
- * Estruturas
- **************************************************/
 
-/* ------------------------------------------------
- * Estrutura da janela de jogo
- * ------------------------------------------------
- * (veja as funções de janela para mais detalhes)
- --------------------------------------------------*/
-typedef struct window_game Window_game;
 
 /***************************************************
+ * *************************************************
  * Construtores
- **************************************************/
+ * *************************************************
+ ***************************************************/
 
 /* -----------------------------------------------------------
  * Cria a janela de jogo
  * -----------------------------------------------------------
- * Aloca memória no objeto Window_game (a janela de jogo) e
- * cria lista de eventos da janela
+ * Aloca memória no objeto Window_game (a janela de jogo),
+ * cria lista de eventos da janela e lista de eventos do
+ * timer (que controlará o FPS)
  *
  * Retorna false se não for bem sucedido
  * -----------------------------------------------------------
@@ -79,23 +75,41 @@ typedef struct window_game Window_game;
  -------------------------------------------------------------*/
 int create_window_game();
 
+
+
 /**************************************************
+ * ************************************************
  * Destrutores
+ * ************************************************
  **************************************************/
 
 /* -----------------------------------------------------------
  * Desaloca objeto Window_game do módulo
  * -----------------------------------------------------------
- * Desaloca objeto display, a lista de eventos da janela, e
- * o objeto Window_game
+ * Desaloca objeto display, a lista de eventos da janela,
+ * o objeto Window_game e a lista de eventos do timer
  *
  * Execute após o loop principal do jogo
  -------------------------------------------------------------*/
-void desaloc_window();
+void dealloc_window();
+
+
 
 /**************************************************
+ * ************************************************
  * Funções de window
+ * ************************************************
  **************************************************/
+
+/* ------------------------------------------------
+ * Inicia timer
+ * ------------------------------------------------
+ * Use antes do loop principal do jogo
+ *
+ * O timer controla a quantidade de frames por
+ * segundo do jogo
+ --------------------------------------------------*/
+void start_timer();
 
 /* ----------------------------------------------
  * Retorna o valor de exit da janela
@@ -104,6 +118,7 @@ void desaloc_window();
  *
  * O valor de exit é usado para verificar
  * se o loop principal deve continuar executando
+ * (use na verificação do while principal)
  ------------------------------------------------*/
 int get_window_exit_value();
 
@@ -116,28 +131,21 @@ int get_window_exit_value();
  * o momento de execução do próximo loop
  * de jogo, para ajustar de acordo com o
  * FPS_GAME especificado
+ *
+ * Crie um loop dentro do loop principal
+ * e use essa função para verificar se
+ * esse loop deve ser executado. tudo
+ * no jogo deve ficar dentro desse loop
  -----------------------------------------*/
 int get_window_tick();
 
-/* ---------------------------------------------
- * Configura valor de exit da janela para true
- * ---------------------------------------------
- * Chamando essa função, a variável tick será
- * true, possibilitando sair do loop principal
- * do jogo.
- -----------------------------------------------*/
-void set_window_exit_true();
-
 /* -------------------------------------------------
- * Configura o valor de tick da janela
+ * Configura o valor de tick da janela para false
  * -------------------------------------------------
- * Use com funções de time para executar o loop
- * principal somente dentro do FPS_GAME especificado
- * -------------------------------------------------
- * Parâmetros:
- * value : true ou false
+ * Use no final da execução do loop interno ao loop
+ * principal do jogo
  ---------------------------------------------------*/
-void set_window_tick(int value);
+void set_window_tick_false();
 
 /* --------------------------------------------------
  * Coloca a janela como local de desenho atual
@@ -155,7 +163,7 @@ void set_draw_current_window_game();
 int set_mouse_cursor_window();
 
 /* -------------------------------------------------------------
- * Verifica eventos da janela e os executa
+ * Verifica eventos da janela e timer e os executa
  ---------------------------------------------------------------*/
 void check_event_queue_window();
 

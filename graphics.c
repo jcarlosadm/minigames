@@ -37,7 +37,7 @@ int create_atlas(){
 
 }
 
-void desaloc_atlas(){
+void dealloc_atlas(){
     if(atlas){
         al_destroy_bitmap(atlas->atlas);
         free(atlas);

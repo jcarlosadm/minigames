@@ -20,7 +20,7 @@ typedef struct atlas_game Atlas_game;
 
 int create_atlas();
 
-void desaloc_atlas();
+void dealloc_atlas();
 
 ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name);
 

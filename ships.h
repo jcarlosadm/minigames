@@ -70,7 +70,7 @@ Player_ship* new_player_ship(const char *type, const char *subtype);
  * ship : nave a ser desalocada
  */
 
-void desaloc_ship(Ship* ship);
+void dealloc_ship(Ship* ship);
 
 /*
  * Desaloca nave player
@@ -78,7 +78,7 @@ void desaloc_ship(Ship* ship);
  * Parâmetros:
  * ship : nave do player
  */
-void desaloc_player_ship(Player_ship* ship);
+void dealloc_player_ship(Player_ship* ship);
 
 /*************************************************
  * Funções comuns para todas as naves

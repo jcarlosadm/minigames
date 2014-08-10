@@ -18,7 +18,7 @@
  * Se sucesso, retorna 1
  * Caso contrário, retorna 0
  */
-int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time);
+int init_();
 
 /*
  * Desalocação de memória dos objetos de jogo
@@ -31,8 +31,7 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time);
  * event_queue : objeto ALLEGRO_EVENT_QUEUE do allegro
  * event_queue_time : objeto ALLEGRO_EVENT_QUEUE do allegro
  */
-void finish_game(Player_ship** player,ALLEGRO_TIMER **timer,
-        ALLEGRO_EVENT_QUEUE **event_queue_time);
+void finish_game(Player_ship** player);
 
 
 int main()
@@ -48,17 +47,6 @@ int main()
     // jogador
     Player_ship *player = NULL;
 
-    /*
-     * Objetos do allegro
-     */
-
-    // timer
-    ALLEGRO_TIMER *timer = NULL;
-    // lista de eventos de tempo
-    ALLEGRO_EVENT_QUEUE *event_queue_time = NULL;
-    // pega evento único
-    ALLEGRO_EVENT event;
-
     /*******************************
      * Inicialização
      *******************************/
@@ -68,7 +56,7 @@ int main()
      */
 
     // se falhar na inicialização, finaliza programa
-    if(!init_(&timer,&event_queue_time)){
+    if(!init_()){
         fprintf(stderr, "falha ao inicializar\n");
         exit(EXIT_FAILURE);
     }
@@ -85,7 +73,7 @@ int main()
     player = new_player_ship("player","blue");
     // se falhar, finaliza programa
     if(player == NULL){
-        finish_game(&player, &timer,&event_queue_time);
+        finish_game(&player);
         exit(EXIT_FAILURE);
     }
 
@@ -98,7 +86,7 @@ int main()
     al_flip_display();
 
     // inicia timer
-    al_start_timer(timer);
+    start_timer();
 
     while(!get_window_exit_value()){
 
@@ -129,26 +117,11 @@ int main()
              */
 
             // configura para que a janela não possa mais ser executada até o próximo fps
-            set_window_tick(false);
+            set_window_tick_false();
 
             update_controls();
 
         // se a janela não puder ser executada, verifica timer para o próximo loop
-        }else{
-
-            // enquanto a lista de eventos de tempo não estiver vazia....
-            while (!(al_is_event_queue_empty(event_queue_time))){
-
-                // pega um evento da lista de eventos de tempo e põe em event
-                al_wait_for_event(event_queue_time, &event);
-
-                // se o evento for de timer
-                if(event.type == ALLEGRO_EVENT_TIMER){
-                    // configura para que a janela possa ser executada
-                    set_window_tick(true);
-                }
-            }
-
         }
 
     }
@@ -158,7 +131,7 @@ int main()
      ************************************/
 
     // desaloca memória
-    finish_game(&player, &timer,&event_queue_time);
+    finish_game(&player);
 
     // fecha programa com sucesso
     return EXIT_SUCCESS;
@@ -167,12 +140,11 @@ int main()
 /*
  * Inicialização principal
  */
-int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
+int init_(){
     // guarda true se sucesso e false se fracasso
     int success = true;
 
     // tenta inicializar o allegro
-    // se falhar, success recebe false
     if(!al_init()){
         fprintf(stderr, "falha ao iniciar o allegro\n");
         success = false;
@@ -180,44 +152,20 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
 
     al_init_image_addon();
 
-    *timer = (ALLEGRO_TIMER*) al_create_timer(1.0 / FPS_GAME);
-    if(!*timer) {
-        fprintf(stderr, "falha ao iniciar o timer\n");
-        success = false;
-    }
-
     // tenta criar janela
     if(!create_window_game()) success = false;
 
     // tenta criar lista de eventos de controles
-    if(!start_event_queue_controls()) success = false;
-
-    // tenta criar lista de eventos de tempo
-    *event_queue_time = al_create_event_queue();
-    if(!*event_queue_time) {
-        fprintf(stderr, "falha ao criar lista de eventos de tempo\n");
-        success = false;
-    }
-
-    // tenta inicializar o mouse
-    if(!start_mouse()) success = false;
+    if(!start_controls()) success = false;
 
     if(!create_atlas()) success = false;
 
     // se não for bem sucedido em alguma inicialização, desaloca o que foi alocado
     if(!success){
-        if(*timer) al_destroy_timer(*timer);
-        desaloc_event_queue_controls();
-        if(*event_queue_time) al_destroy_event_queue(*event_queue_time);
-        desaloc_window();
-    }
-
-    // caso seja bem sucedido
-    else{
-        // registra eventos do timer
-        al_register_event_source(*event_queue_time, al_get_timer_event_source(*timer));
-        // registra eventos dos controles
-        register_event_queue_controls();
+        dealloc_controls();
+        dealloc_window();
+        dealloc_atlas();
+        return success;
     }
 
     // retorna true ou false
@@ -227,20 +175,13 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
 /*
  * Desaloca o que foi alocado
  */
-void finish_game(Player_ship** player, ALLEGRO_TIMER **timer,
-        ALLEGRO_EVENT_QUEUE **event_queue_time){
+void finish_game(Player_ship** player){
 
     // desaloca player
-    desaloc_player_ship(*player);
-    // desaloca timer
-    if(*timer) al_destroy_timer(*timer);
-    // desaloca lista de eventos de controle
-    desaloc_event_queue_controls();
-    // desaloca lista de evento de tempo
-    if(*event_queue_time) al_destroy_event_queue(*event_queue_time);
-    // desaloca janela
-    desaloc_mouse();
-    desaloc_atlas();
-    desaloc_window();
+    dealloc_player_ship(*player);
+    // desaloca controles
+    dealloc_controls();
+    dealloc_atlas();
+    dealloc_window();
 
 }

@@ -7,12 +7,13 @@
 #include "window.h"
 
 /**************************************************
+ * ************************************************
  * Estruturas
+ * ************************************************
  **************************************************/
 
 /* --------------------------------------------------------------------------------------
  * Estrutura Window_game
- *
  * --------------------------------------------------------------------------------------
  * Armazena dados relativos a janela do jogo
  * --------------------------------------------------------------------------------------
@@ -36,20 +37,44 @@ typedef struct window_game {
     int current_window;
 }Window_game;
 
+/* ------------------------------------------------------------------
+ * Estrutura Timer_game
+ * ------------------------------------------------------------------
+ * Armazena dados relativos ao timer do jogo
+ * ------------------------------------------------------------------
+ * Membros:
+ * ALLEGRO_TIMER *timer : objeto allegro de controle de tempo
+ * ALLEGRO_EVENT_QUEUE *event_queue_time : objeto allegro de evento que
+ *                                         verifica alterações no timer
+ --------------------------------------------------------------------*/
+typedef struct timer_game{
+    // objetos allegro
+    ALLEGRO_TIMER *timer;
+    ALLEGRO_EVENT_QUEUE *event_queue_time;
+}Timer_game;
+
 /*************************************************
- * Variáveis globais no módulo
+ * ***********************************************
+ * Objetos do módulo
+ * ***********************************************
  *************************************************/
 
 // janela principal de jogo
 Window_game *window;
 
-/***************************************************
+// timer
+Timer_game *timer;
+
+/**************************************************
+ * ************************************************
  * Construtores
+ * ************************************************
  **************************************************/
 
-// protótipos necessários
+// protótipos necessários (veja essas funções mais adiante)
 void register_event_queue_window();
 int generate_event_queue_window();
+int build_timer();
 
 /* --------------------------------------------------------
  * Aloca memória para objeto window, do tipo Window_game
@@ -126,6 +151,9 @@ int create_window_game(){
     // registra eventos da janela
     register_event_queue_window();
 
+    // gera timer
+    build_timer();
+
     // sai da função com sucesso
     return true;
 }
@@ -150,16 +178,79 @@ int generate_event_queue_window(){
     }
 }
 
+/* -----------------------------------------------------------------------
+ * Tenta iniciar o timer que controla a quantidade de frames por segundo
+ * -----------------------------------------------------------------------
+ * Retorna false se não conseguir
+ -------------------------------------------------------------------------*/
+int build_timer(){
+
+    // tenta alocar memória para o objeto timer
+    timer = (Timer_game*)malloc(sizeof(Timer_game));
+    // se não conseguir, retorna false
+    if(!timer){
+        fprintf(stderr, "falha ao alocar objeto Timer_game\n");
+        return false;
+    }
+
+    // tenta alocar objeto ALLEGRO_TIMER
+    timer->timer = (ALLEGRO_TIMER*) al_create_timer(1.0 / FPS_GAME);
+    // se falhar, libera memória de timer e sai com erro
+    if(!timer->timer) {
+        fprintf(stderr, "falha ao alocar objeto ALLEGRO_TIMER\n");
+        free(timer);
+        return false;
+    }
+
+    // tenta alocar memória para a lista de eventos do timer
+    timer->event_queue_time = al_create_event_queue();
+    // se não conseguir, desaloca objetos ALLEGRO_TIMER e Timer_game
+    // e sai com false
+    if(!timer->event_queue_time) {
+        fprintf(stderr, "falha ao criar lista de eventos de tempo\n");
+        al_destroy_timer(timer->timer);
+        free(timer);
+        return false;
+    }
+
+    // se conseguiu, registra eventos do timer
+    al_register_event_source(timer->event_queue_time, al_get_timer_event_source(timer->timer));
+
+    return true;
+}
+
 /**************************************************
+ * ************************************************
  * Destrutores
+ * ************************************************
  **************************************************/
+
+/* -------------------------------------------------------------
+ * Desaloca timer
+ * -------------------------------------------------------------
+ * Desaloca objetos ALLEGRO_TIMER, ALLEGRO_EVENT_QUEUE e
+ * Timer_game
+ ---------------------------------------------------------------*/
+void dealloc_timer(){
+    // se timer estiver alocado
+    if(timer){
+        // desaloca objeto ALLEGRO_TIMER
+        al_destroy_timer(timer->timer);
+        // desaloca objeto ALLEGRO_EVENT_QUEUE
+        al_destroy_event_queue(timer->event_queue_time);
+        // desaloca objeto Timer_game
+        free(timer);
+        // informa
+        puts("objeto Timer_game desalocado");
+    }
+}
 
 /* ---------------------------------------------------------
  * Desaloca window
  * ---------------------------------------------------------
  * desaloca memória dos objetos allegro e do objeto Window_game
  -----------------------------------------------------------*/
-void desaloc_window(){
+void dealloc_window(){
     // se window estiver alocada
     if(window){
         // desaloca memória do objeto ALLEGRO_DISPLAY
@@ -170,13 +261,24 @@ void desaloc_window(){
         free(window);
         // informa
         puts("desalocado window");
-    }
 
+        // desaloca timer
+        dealloc_timer();
+    }
 }
 
 /**************************************************
+ * ************************************************
  * Funções de window
+ * ************************************************
  **************************************************/
+
+/* ------------------------------------------------
+ * Inicia timer
+ --------------------------------------------------*/
+void start_timer(){
+    al_start_timer(timer->timer);
+}
 
 /* ------------------------------------
  * Retorna valor de exit da janela
@@ -199,16 +301,11 @@ void set_window_exit_true(){
     window->exit = true;
 }
 
-/* --------------------------------------
- * Configura valor de tick da janela
- * --------------------------------------
- * Parâmetros:
- * int value : true ou false
- ----------------------------------------*/
-void set_window_tick(int value){
-    if(value) window->tick = true;
-    else
-        window->tick = false;
+/* -------------------------------------------
+ * Configura valor tick de window para false
+ ---------------------------------------------*/
+void set_window_tick_false(){
+    window->tick = false;
 }
 
 /* --------------------------------------
@@ -241,6 +338,28 @@ void register_event_queue_window(){
     al_register_event_source(window->event_queue_window, al_get_display_event_source(window->window));
 }
 
+/* --------------------------------------------------------------------
+ * Checa eventos do timer
+ ----------------------------------------------------------------------*/
+void check_event_queue_timer(){
+
+    // variável que armazenará um evento
+    ALLEGRO_EVENT event;
+
+    // enquanto a lista de eventos não for vazia
+    while (!(al_is_event_queue_empty(timer->event_queue_time))){
+
+        // pega um evento da lista de eventos de tempo e põe em event
+        al_wait_for_event(timer->event_queue_time, &event);
+
+        // se o evento for de timer...
+        if(event.type == ALLEGRO_EVENT_TIMER){
+            // configura para que a janela possa ser executada
+            window->tick = true;
+        }
+    }
+}
+
 /* ----------------------------------------------------------------------------
  * Checa eventos da janela
  ------------------------------------------------------------------------------*/
@@ -261,4 +380,7 @@ void check_event_queue_window(){
             set_window_exit_true();
         }
     }
+
+    // verifica eventos do timer
+    check_event_queue_timer();
 }
