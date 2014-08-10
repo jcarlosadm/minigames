@@ -30,6 +30,12 @@ typedef struct dimension{
 }Dimension;
 
 typedef struct fire{
+    char type[20]; // player ou enemy
+    char subtype[20]; // subtipo de tiro
+
+    int power;
+    int speed;
+
     int active;
     float x;
     float y;
@@ -38,6 +44,9 @@ typedef struct fire{
 
 // Descreve a nave, usada pelo inimigo e como base do player
 typedef struct ship{
+    char type[20]; // player ou enemy
+    char subtype[20]; // subtipo de player ou enemy
+
     Attributes attr; // atributos da nave
     Location location; // coordenadas x e y da nave
     Dimension dimension; // largura e altura da nave
@@ -72,8 +81,12 @@ void initialize_loc_dim(Location* loc, Dimension* dim, float position_x,
 }
 
 // aloca nave inimiga ou base para o player
-Ship* new_ship(int power, float speed,float position_x,
-        float position_y, float width, float height){
+Ship* new_ship(const char *type, const char *subtype){
+
+
+    FILE * file;
+    mxml_node_t *tree;
+
     // aloca nave com malloc
     Ship *ship_ = (Ship*) malloc (sizeof(Ship));
 
@@ -82,17 +95,72 @@ Ship* new_ship(int power, float speed,float position_x,
         return NULL;
     }
 
+    if(strcmp(type,"player")==0){
+        file = fopen(XML_PLAYER,"r");
+    }
+    else if(strcmp(type,"enemy")==0){
+        file = fopen(XML_PLAYER,"r");
+    }else{
+        puts("type deve ser player ou enemy");
+        free(ship_);
+        return NULL;
+    }
+
+    if(!file){
+        puts("falha ao tentar abrir o arquivo");
+        free(ship_);
+        return NULL;
+    }
+
+    tree = mxmlLoadFile(NULL,file,MXML_TEXT_CALLBACK);
+    if(!tree){
+        puts("falha ao tentar criar arvore");
+        free(ship_);
+        fclose(file);
+        return NULL;
+    }
+
+    fclose(file);
+
+    mxml_node_t* node = mxmlFindElement(tree,tree,subtype,NULL,NULL,MXML_DESCEND);
+    if(!node){
+        puts("bitmap nao encontrado");
+        mxmlDelete(tree);
+        free(ship_);
+        return NULL;
+    }
+
+    node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
+    build_Attr(&(ship_->attr),atof(mxmlElementGetAttr(node,"power")),
+            atof(mxmlElementGetAttr(node,"speed")));
+    printf("power %d, speed %.0f \n",ship_->attr.power,ship_->attr.speed);
+
+    node = mxmlWalkNext(node, tree, MXML_DESCEND);
+    ship_->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"));
+
+    node = mxmlWalkNext(node, tree, MXML_DESCEND);
+    initialize_loc_dim(&(ship_->location),&(ship_->dimension),atof(mxmlElementGetAttr(node,"x")),
+                atof(mxmlElementGetAttr(node,"y")), al_get_bitmap_width(ship_->image),
+                al_get_bitmap_height(ship_->image));
+    printf("x %.0f, y %.0f, w %.0f, h %.0f \n",ship_->location.position_x,ship_->location.position_y,
+            ship_->dimension.width,ship_->dimension.height);
+
+    node = mxmlWalkNext(node, tree, MXML_DESCEND);
+    ship_->fire.image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"));
+
+    mxmlDelete(tree);
+
     // define os atributos
-    build_Attr(&(ship_->attr),power,speed);
+    //build_Attr(&(ship_->attr),power,speed);
     // define localização e dimensões
-    initialize_loc_dim(&(ship_->location),&(ship_->dimension),position_x,
-            position_y,width, height);
+    //initialize_loc_dim(&(ship_->location),&(ship_->dimension),position_x,
+      //      position_y,al_get_bitmap_width(ship_->image), al_get_bitmap_height(ship_->image));
     // cria uma imagem bitmap
 
-    ship_->image = create_bitmap_from_atlas("playerShip1_blue.png");
+    //ship_->image = create_bitmap_from_atlas("playerShip1_blue.png");
 
     ship_->fire.active = false;
-    ship_->fire.image = NULL;
+    //ship_->fire.image = NULL;
     ship_->fire.x = 0;
     ship_->fire.y = 0;
 
@@ -105,8 +173,7 @@ Ship* new_ship(int power, float speed,float position_x,
 }
 
 // aloca nave do player
-Player_ship* new_player_ship(int power, float speed,float position_x,
-        float position_y, float width, float height){
+Player_ship* new_player_ship(const char *type, const char *subtype){
     // aloca nave com malloc
     Player_ship *ship = (Player_ship*) malloc (sizeof(Player_ship));
 
@@ -116,8 +183,7 @@ Player_ship* new_player_ship(int power, float speed,float position_x,
     }
 
     // constrói a base
-    ship->base = new_ship(power, speed,position_x,
-            position_y, width, height);
+    ship->base = new_ship(type,subtype);
 
     if(ship->base == NULL){
         fprintf(stderr, "falha ao alocar base de Player_ship\n");
@@ -137,10 +203,9 @@ Player_ship* new_player_ship(int power, float speed,float position_x,
 void desaloc_ship(Ship* ship){
 
     if(ship){
-        // desaloca imagem
+        // desaloca imagens
         al_destroy_bitmap(ship->image);
-        if(ship->fire.active)
-            al_destroy_bitmap(ship->fire.image);
+        al_destroy_bitmap(ship->fire.image);
         // desaloca com free
         free(ship);
         puts("desalocado ship");
@@ -154,7 +219,7 @@ void desaloc_player_ship(Player_ship* ship){
         // desaloca base
         desaloc_ship(ship->base);
         // desaloca com free
-        if(ship) free(ship);
+        free(ship);
         puts("desalocado ship_player");
     }
 }
@@ -188,7 +253,7 @@ Ship* getBase(Player_ship* ship){
 void player_fire(Player_ship* ship){
     if(!ship->base->fire.active){
         ship->base->fire.active = true;
-        ship->base->fire.image = create_bitmap_from_atlas("laserBlue03.png");
+        //ship->base->fire.image = create_bitmap_from_atlas("laserBlue03.png");
         ship->base->fire.x = ship->base->location.position_x + (al_get_bitmap_width(ship->base->image)/2)
                 - al_get_bitmap_width(ship->base->fire.image)/2;
         ship->base->fire.y = ship->base->location.position_y -
@@ -205,8 +270,8 @@ void update_player_fire(Player_ship* ship){
         ship->base->fire.y -= 6;
         if(ship->base->fire.y < 5){
             ship->base->fire.active = false;
-            al_destroy_bitmap(ship->base->fire.image);
-            ship->base->fire.image = NULL;
+            //al_destroy_bitmap(ship->base->fire.image);
+            //ship->base->fire.image = NULL;
         }
     }
 }

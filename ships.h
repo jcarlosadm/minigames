@@ -10,11 +10,18 @@
 // bibliotecas básicas
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <allegro5/allegro.h>
+#include <mxml.h>
 // módulo do jogo
 #include "graphics.h"
 #include "window.h"
 #include "controls.h"
+
+#define XML_PLAYER "info/player.xml"
+#define XML_ENEMY "info/enemy.xml"
+#define XML_SHOOTER "info/shoot.xml"
+
 
 /*******************************************
  * Tipos
@@ -38,8 +45,7 @@ typedef struct player_ship Player_ship;
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-Ship* new_ship(int power, float speed,float position_x,
-        float position_y, float width, float height);
+Ship* new_ship(const char *type, const char *subtype);
 
 /*
  * Nave usada pelo Player
@@ -49,8 +55,7 @@ Ship* new_ship(int power, float speed,float position_x,
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-Player_ship* new_player_ship(int power, float speed,float position_x,
-        float position_y, float width, float height);
+Player_ship* new_player_ship(const char *type, const char *subtype);
 
 /*************************************************
  * Destrutores - desalocação de memória

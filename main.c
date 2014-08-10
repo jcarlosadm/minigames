@@ -82,7 +82,7 @@ int main()
      */
 
     // aloca memória para o objeto Player_ship
-    player = new_player_ship(6, 7,get_mouse_x()-16,get_mouse_y()-16,32,32);
+    player = new_player_ship("player","blue");
     // se falhar, finaliza programa
     if(player == NULL){
         finish_game(&player, &timer,&event_queue_time);
@@ -128,8 +128,6 @@ int main()
              * Finalização do loop
              */
 
-            // configura redraw de window para false
-            set_window_redraw(false);
             // configura para que a janela não possa mais ser executada até o próximo fps
             set_window_tick(false);
 
@@ -201,9 +199,6 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
         success = false;
     }
 
-    // tenta criar lista de eventos da janela
-    if(!generate_event_queue_window()) success = false;
-
     // tenta inicializar o mouse
     if(!start_mouse()) success = false;
 
@@ -218,17 +213,11 @@ int init_(ALLEGRO_TIMER **timer, ALLEGRO_EVENT_QUEUE **event_queue_time){
     }
 
     // caso seja bem sucedido
-    else
-    {
-
-        // registra eventos da janela
-        register_event_queue_window();
+    else{
         // registra eventos do timer
         al_register_event_source(*event_queue_time, al_get_timer_event_source(*timer));
         // registra eventos dos controles
         register_event_queue_controls();
-
-
     }
 
     // retorna true ou false

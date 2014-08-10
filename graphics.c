@@ -88,7 +88,7 @@ ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name){
         return NULL;
     }
 
-    printf("%.0f %.0f %.0f %.0f\n",info.x,info.y,info.width,info.height);
+    printf("image info: x %.0f, y %.0f, w %.0f, h %.0f\n",info.x,info.y,info.width,info.height);
 
     ALLEGRO_BITMAP* bitmap = al_create_bitmap(info.width,info.height);
 
