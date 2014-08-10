@@ -39,8 +39,11 @@ makedir_bin:
 $(BIN_NAME): $(OBJ)
 	$(CC) -o $(BIN_DIR)/$@ $^ $(ALLEGROFLAGS) $(MINIXMLFLAGS)
 
-$(OBJ_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(OBJ_DIR)/main.o: main.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o: %.c %.h
+	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:

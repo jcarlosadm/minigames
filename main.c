@@ -3,8 +3,9 @@
  *
  */
 
-// bibliotecas básicas
+// bibliotecas padrão
 #include <stdio.h>
+// allegro
 #include <allegro5/allegro.h>
 // módulos do jogo
 #include "graphics.h"
@@ -12,74 +13,51 @@
 #include "ships.h"
 #include "controls.h"
 
-/*
- * Inicialização principal
- * Inicialização do allegro, criação do timer, criação da janela, lista de eventos normais e de tempo
- * Se sucesso, retorna 1
- * Caso contrário, retorna 0
- */
-int init_();
+/*---------------------------------------------------------------------------------
+ * protótipos necessários (veja a descrição dessas funções mais abaixo, após main)
+ ----------------------------------------------------------------------------------*/
+// inicialização
+int basic_alloc();
+// finalização
+void basic_dealloc(Player_ship** player);
 
-/*
- * Desalocação de memória dos objetos de jogo
- * Desaloca window
- * Desaloca player
- *
- * Parâmetros:
- * player : ponteiro para Player_ship
- * timer : objeto ALLEGRO_TIMER do allegro
- * event_queue : objeto ALLEGRO_EVENT_QUEUE do allegro
- * event_queue_time : objeto ALLEGRO_EVENT_QUEUE do allegro
- */
-void finish_game(Player_ship** player);
-
-
+/*---------------------------------------------------------------------------------
+ * main
+ ----------------------------------------------------------------------------------*/
 int main()
 {
-    /*******************************
+    /*-----------------------------------------
      * variáveis locais
-     *******************************/
-
-    /*
-     * objetos de jogo
-     */
+     ------------------------------------------*/
 
     // jogador
     Player_ship *player = NULL;
 
-    /*******************************
+    /*------------------------------------------
      * Inicialização
-     *******************************/
-
-    /*
-     * Inicializações do Allegro
-     */
+     -------------------------------------------*/
 
     // se falhar na inicialização, finaliza programa
-    if(!init_()){
+    if(!basic_alloc()){
         fprintf(stderr, "falha ao inicializar\n");
         exit(EXIT_FAILURE);
     }
 
-    /************************************
+    /* -------------------------------------------
      * Alocações de objetos do jogo
-     ************************************/
-
-    /*
-     * Alocação do player
-     */
+     ---------------------------------------------*/
 
     // aloca memória para o objeto Player_ship
     player = new_player_ship("player","blue");
-    // se falhar, finaliza programa
+    // se falhar, desaloca memória alocada e finaliza programa
     if(player == NULL){
-        finish_game(&player);
+        basic_dealloc(&player);
         exit(EXIT_FAILURE);
     }
 
-    /************************************
+    /*------------------------------------------------
      * Processo principal
-     ************************************/
+     -------------------------------------------------*/
 
     // apenas configura a cor branca e torna visível
     al_clear_to_color(al_map_rgb_f(0,0,0));
@@ -88,77 +66,95 @@ int main()
     // inicia timer
     start_timer();
 
+    // loop principal do jogo
     while(!get_window_exit_value()){
 
         // verifica se algum evento da janela ocorre
         check_event_queue_window();
 
-        // se a janela puder ser executada no fps configurado
+        // se a janela puder ser executada no fps configurado...
         if(get_window_tick()){
 
-            /*
+            /* -------------------------------------------------------
              * Lógica
-             */
+             ---------------------------------------------------------*/
 
+            // checa eventos dos controles
             check_event_queue_controls();
+
+            // atualizar player
             update_player(player);
 
-            /*
+            /* --------------------------------------------------------
              * Desenho
-             */
+             ----------------------------------------------------------*/
 
-            //printPower(getBase(player));
+            // limpa a tela
             al_clear_to_color(al_map_rgb_f(0,0,0));
+
+            // desenha player
             draw_ship(getBase(player));
+
+            // torna visível
             al_flip_display();
 
-            /*
+            /* ---------------------------------------------------------
              * Finalização do loop
-             */
+             -----------------------------------------------------------*/
 
             // configura para que a janela não possa mais ser executada até o próximo fps
             set_window_tick_false();
 
+            // atualiza controles
             update_controls();
-
-        // se a janela não puder ser executada, verifica timer para o próximo loop
         }
-
     }
 
-    /************************************
+    /*-------------------------------------------
      * Finalização
-     ************************************/
+     --------------------------------------------*/
 
-    // desaloca memória
-    finish_game(&player);
+    // desaloca memória alocada
+    basic_dealloc(&player);
 
     // fecha programa com sucesso
     return EXIT_SUCCESS;
 }
 
-/*
+/*-------------------------------------------------------------------------
  * Inicialização principal
- */
-int init_(){
+ * ------------------------------------------------------------------------
+ * Inicialização do allegro, inicialização dos módulos extras de imagem,
+ * alocação de memória para a janela e sua fila de eventos, inicialização
+ * do timer  e sua fila de eventos (ambos na inicialização da janela),
+ * inicialização dos controles e de sua fila de eventos, carregamento
+ * do atlas.
+ * ------------------------------------------------------------------------
+ * Se sucesso, retorna true
+ * Caso contrário, desaloca o que foi alocado e retorna false
+ --------------------------------------------------------------------------*/
+int basic_alloc(){
+
     // guarda true se sucesso e false se fracasso
     int success = true;
 
-    // tenta inicializar o allegro
-    if(!al_init()){
+    // se falhar em inicializar o allegro, informa e e configura para false
+    if(success && !al_init()){
         fprintf(stderr, "falha ao iniciar o allegro\n");
         success = false;
     }
 
-    al_init_image_addon();
+    // inicializa os módulos extras de imagens
+    if(success) al_init_image_addon();
 
-    // tenta criar janela
-    if(!create_window_game()) success = false;
+    // tenta criar janela e eventos relacionados, além do timer
+    if(success && !create_window_game()) success = false;
 
-    // tenta criar lista de eventos de controles
-    if(!start_controls()) success = false;
+    // tenta inicializar controles e eventos relacionados
+    if(success && !start_controls()) success = false;
 
-    if(!create_atlas()) success = false;
+    // tenta carregar atlas
+    if(success && !create_atlas()) success = false;
 
     // se não for bem sucedido em alguma inicialização, desaloca o que foi alocado
     if(!success){
@@ -172,16 +168,23 @@ int init_(){
     return success;
 }
 
-/*
- * Desaloca o que foi alocado
- */
-void finish_game(Player_ship** player){
+/*---------------------------------------------------------------------
+ * Desalocação de memória dos objetos alocados
+ * --------------------------------------------------------------------
+ * Desaloca player, desaloca controls, desaloca atlas e window
+ * --------------------------------------------------------------------
+ * Parâmetros:
+ * Player_ship** player : ponteiro para ponteiro Player_ship*
+ ----------------------------------------------------------------------*/
+void basic_dealloc(Player_ship** player){
 
     // desaloca player
     dealloc_player_ship(*player);
     // desaloca controles
     dealloc_controls();
+    // desaloca atlas
     dealloc_atlas();
+    // desaloca window
     dealloc_window();
 
 }
