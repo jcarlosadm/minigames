@@ -7,11 +7,12 @@
 #ifndef CONTROLS_H_
 #define CONTROLS_H_
 
-// bibliotecas básicas
-#include <allegro5/allegro.h>
-#include <stdlib.h>
+// bibliotecas padrão
 #include <stdio.h>
-// outros módulos
+#include <stdlib.h>
+// allegro
+#include <allegro5/allegro.h>
+// módulos do jogo
 #include "window.h"
 
 /**********************************************************

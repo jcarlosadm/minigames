@@ -15,8 +15,6 @@
 /* --------------------------------------------------------------------------------------
  * Estrutura Window_game
  * --------------------------------------------------------------------------------------
- * Armazena dados relativos a janela do jogo
- * --------------------------------------------------------------------------------------
  * Membros:
  * ALLEGRO_DISPLAY *window : A janela propriamente dita
  * ALLEGRO_EVENT_QUEUE *event_queue_window : guarda objeto ALLEGRO_EVENT_QUEUE do allegro
@@ -39,8 +37,6 @@ typedef struct window_game {
 
 /* ------------------------------------------------------------------
  * Estrutura Timer_game
- * ------------------------------------------------------------------
- * Armazena dados relativos ao timer do jogo
  * ------------------------------------------------------------------
  * Membros:
  * ALLEGRO_TIMER *timer : objeto allegro de controle de tempo

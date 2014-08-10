@@ -7,9 +7,10 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
-// bibliotecas básicas
+// bibliotecas padrão
 #include <stdio.h>
 #include <stdlib.h>
+// allegro
 #include <allegro5/allegro.h>
 
 /*************************************************

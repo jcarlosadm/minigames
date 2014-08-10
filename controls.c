@@ -15,8 +15,6 @@
 /*------------------------------------------------------------
  * Estrutura da lista de eventos dos controles
  * -----------------------------------------------------------
- * Guarda informações da lista de eventos dos controles
- * -----------------------------------------------------------
  * Membros:
  * ALLEGRO_EVENT_QUEUE *event_queue : lista de eventos dos
  *                                    controles
@@ -28,8 +26,6 @@ typedef struct event_queue_controls{
 
 /* ------------------------------------------------------------
  * Estrutura do mouse do jogo
- * ------------------------------------------------------------
- * Guarda informações do mouse do jogo
  * ------------------------------------------------------------
  * Membros:
  * int previous_state : estado do mouse no loop anterior (true/false)
