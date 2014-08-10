@@ -88,6 +88,8 @@ int create_window_game();
  * -----------------------------------------------------------
  * Desaloca objeto display, a lista de eventos da janela, e
  * o objeto Window_game
+ *
+ * Execute após o loop principal do jogo
  -------------------------------------------------------------*/
 void desaloc_window();
 
@@ -95,18 +97,34 @@ void desaloc_window();
  * Funções de window
  **************************************************/
 
-/* ---------------------------------------
+/* ----------------------------------------------
  * Retorna o valor de exit da janela
- -----------------------------------------*/
+ * ----------------------------------------------
+ * Retorno true ou false
+ *
+ * O valor de exit é usado para verificar
+ * se o loop principal deve continuar executando
+ ------------------------------------------------*/
 int get_window_exit_value();
 
 /* ---------------------------------------
  * Retorna o valor de tick da janela
+ * ---------------------------------------
+ * Retorno true ou false
+ *
+ * O valor de tick é usado para verificar
+ * o momento de execução do próximo loop
+ * de jogo, para ajustar de acordo com o
+ * FPS_GAME especificado
  -----------------------------------------*/
 int get_window_tick();
 
 /* ---------------------------------------------
  * Configura valor de exit da janela para true
+ * ---------------------------------------------
+ * Chamando essa função, a variável tick será
+ * true, possibilitando sair do loop principal
+ * do jogo.
  -----------------------------------------------*/
 void set_window_exit_true();
 
@@ -123,13 +141,16 @@ void set_window_tick(int value);
 
 /* --------------------------------------------------
  * Coloca a janela como local de desenho atual
+ * --------------------------------------------------
+ * Chame-a sempre que desenhar em outro local e
+ * desejar voltar a desenhar na janela
  ----------------------------------------------------*/
 void set_draw_current_window_game();
 
 /* ------------------------------------------------------------------
  * Configura o mouse para usar o cursor padrão do sistema na janela
  * ------------------------------------------------------------------
- * retorna false se não conseguir
+ * Retorna false se não conseguir
  --------------------------------------------------------------------*/
 int set_mouse_cursor_window();
 
