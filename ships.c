@@ -365,16 +365,16 @@ void update_bullet(){
     }
 }
 
-void update_player(Window_game** window,Atlas_game** atlas){
+void update_player(Window_game** window,Atlas_game** atlas, Mouse_game** mouse){
 
-    if(get_mouse_move_state()){
-        player->base->location.position_x = get_mouse_x()-(al_get_bitmap_width(player->base->image)/2);
-        player->base->location.position_y = get_mouse_y()-(al_get_bitmap_height(player->base->image)/2);
+    if(get_mouse_move_state(mouse)){
+        player->base->location.position_x = get_mouse_x(mouse)-(al_get_bitmap_width(player->base->image)/2);
+        player->base->location.position_y = get_mouse_y(mouse)-(al_get_bitmap_height(player->base->image)/2);
     }
 
 
 
-    if(mouseIsClicked()){
+    if(mouseIsClicked(mouse)){
         int bullet_position_x = player->base->location.position_x +
                     (al_get_bitmap_width(player->base->image)/2);
         int bullet_position_y = player->base->location.position_y;
@@ -384,7 +384,7 @@ void update_player(Window_game** window,Atlas_game** atlas){
 
 }
 
-void update_ships_objects(Window_game** window,Atlas_game** atlas){
-    update_player(window,atlas);
+void update_ships_objects(Window_game** window,Atlas_game** atlas,Mouse_game** mouse){
+    update_player(window,atlas,mouse);
     update_bullet();
 }

@@ -67,6 +67,6 @@ void dealloc_ships_objects();
 
 void draw_ships_objects();
 
-void update_ships_objects(Window_game** window,Atlas_game** atlas);
+void update_ships_objects(Window_game** window,Atlas_game** atlas,Mouse_game** mouse);
 
 #endif /* SHIPS_H_ */
