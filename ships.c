@@ -40,7 +40,15 @@ typedef struct bullet{
     float x;
     float y;
     ALLEGRO_BITMAP *image; // imagem do tiro
+
+    Bullet* nextBullet;
+    Bullet* previousBullet;
+
 }Bullet;
+
+typedef struct bullets{
+    Bullet* firstBullet;
+}Bullets;
 
 // Descreve a nave, usada pelo inimigo e como base do player
 typedef struct ship{
@@ -60,15 +68,6 @@ typedef struct player_ship{
     Ship* base;
 }Player_ship;
 
-/********************************************
- * Objetos do módulo
- ********************************************/
-
-// player
-Player_ship* player;
-
-// lista de bullets ativos
-Bullet* bullet;
 
 /*******************************************
  * Construtores - alocação de memória
@@ -90,7 +89,7 @@ void initialize_loc_dim(Location* loc, Dimension* dim, float position_x,
 }
 
 // aloca nave inimiga ou base para o player
-Ship* new_ship(const char *type, const char *subtype,Window_game** window,Atlas_game** atlas){
+Ship* new_ship(const char *type, const char *subtype,Window_game** window,Graphics_game** graphics){
 
 
     FILE * file;
@@ -148,7 +147,7 @@ Ship* new_ship(const char *type, const char *subtype,Window_game** window,Atlas_
     printf("power %d, speed %.0f \n",ship->attr.power,ship->attr.speed);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
-    ship->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,atlas);
+    ship->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,graphics);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
     initialize_loc_dim(&(ship->location),&(ship->dimension),atof(mxmlElementGetAttr(node,"x")),
@@ -180,21 +179,21 @@ Ship* new_ship(const char *type, const char *subtype,Window_game** window,Atlas_
 }
 
 // aloca nave do player
-int new_player_ship(const char *subtype,Window_game** window,Atlas_game** atlas){
+int new_player_ship(Player_ship** player,const char *subtype,Window_game** window,Graphics_game** graphics){
     // aloca nave com malloc
-    player = (Player_ship*) malloc (sizeof(Player_ship));
+    (*player) = malloc (sizeof(Player_ship));
 
-    if(player == NULL){
+    if((*player) == NULL){
         fprintf(stderr, "falha ao alocar objeto Player_ship\n");
         return false;
     }
 
     // constrói a base
-    player->base = new_ship("player",subtype,window,atlas);
+    (*player)->base = new_ship("player",subtype,window,graphics);
 
-    if(player->base == NULL){
+    if((*player)->base == NULL){
         fprintf(stderr, "falha ao alocar base de Player_ship\n");
-        free(player);
+        free(*player);
         return false;
     }
 
@@ -202,83 +201,134 @@ int new_player_ship(const char *subtype,Window_game** window,Atlas_game** atlas)
     return true;
 }
 
-int make_bullet(const char* type, const char* subtype, float position_x, float position_y,
-        Window_game** window, Atlas_game** atlas){
+int make_bullet(Bullets** bullets,const char* type, const char* subtype, float position_x, float position_y,
+        Window_game** window, Graphics_game** graphics){
 
+
+
+    FILE * file;
+    mxml_node_t *tree;
+
+    Bullet* bullet = malloc(sizeof(Bullet));
     if(!bullet){
+        puts("falha ao alocar tiro");
+        return false;
+    }
 
-        FILE * file;
-        mxml_node_t *tree;
+    bullet->active = true;
+    strcpy(bullet->type,type);
+    strcpy(bullet->subtype,subtype);
 
-        bullet = (Bullet*)malloc(sizeof(Bullet));
-        if(!bullet){
-            puts("falha ao alocar tiro");
-            return false;
-        }
+    file = fopen(XML_BULLETS,"r");
 
-        bullet->active = true;
-        strcpy(bullet->type,type);
-        strcpy(bullet->subtype,subtype);
+    if(!file){
+        puts("falha ao tentar abrir o arquivo");
+        free(bullet);
+        return false;
+    }
 
-        file = fopen(XML_BULLETS,"r");
-
-        if(!file){
-            puts("falha ao tentar abrir o arquivo");
-            free(bullet);
-            return false;
-        }
-
-        tree = mxmlLoadFile(NULL,file,MXML_TEXT_CALLBACK);
-        if(!tree){
-            puts("falha ao tentar criar arvore");
-            free(bullet);
-            fclose(file);
-            return false;
-        }
-
+    tree = mxmlLoadFile(NULL,file,MXML_TEXT_CALLBACK);
+    if(!tree){
+        puts("falha ao tentar criar arvore");
+        free(bullet);
         fclose(file);
+        return false;
+    }
 
-        mxml_node_t* node = mxmlFindElement(tree,tree,subtype,NULL,NULL,MXML_DESCEND);
-        if(!node){
-            puts("subtipo nao encontrado");
-            mxmlDelete(tree);
-            free(bullet);
-            return false;
-        }
+    fclose(file);
 
-        node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
-        bullet->power = atoi(mxmlElementGetAttr(node,"power"));
-        bullet->speed = atof(mxmlElementGetAttr(node,"speed"));
-        printf("power %d, speed %.0f \n",bullet->power,bullet->speed);
-
-        node = mxmlWalkNext(node, tree, MXML_DESCEND);
-        bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,atlas);
-
+    mxml_node_t* node = mxmlFindElement(tree,tree,subtype,NULL,NULL,MXML_DESCEND);
+    if(!node){
+        puts("subtipo nao encontrado");
         mxmlDelete(tree);
+        free(bullet);
+        return false;
+    }
 
-        bullet->x = position_x - al_get_bitmap_width(bullet->image)/2;
-        bullet->y = position_y - al_get_bitmap_height(bullet->image);
+    node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
+    bullet->power = atoi(mxmlElementGetAttr(node,"power"));
+    bullet->speed = atof(mxmlElementGetAttr(node,"speed"));
+    printf("power %d, speed %.0f \n",bullet->power,bullet->speed);
 
-        return true;
+    node = mxmlWalkNext(node, tree, MXML_DESCEND);
+    bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,graphics);
+
+    mxmlDelete(tree);
+
+    bullet->x = position_x - al_get_bitmap_width(bullet->image)/2;
+    bullet->y = position_y - al_get_bitmap_height(bullet->image);
+
+    if((*bullets)->firstBullet == NULL){
+        bullet->nextBullet = NULL;
+        bullet->previousBullet = NULL;
+
+        (*bullets)->firstBullet = bullet;
     }
 
     else{
-        puts("ja existe um tiro ativo");
+
+        bullet->previousBullet = NULL;
+        bullet->nextBullet = (*bullets)->firstBullet;
+
+        (*bullets)->firstBullet->previousBullet = bullet;
+        (*bullets)->firstBullet = bullet;
+
+    }
+
+    return true;
+
+}
+
+int makeListofBullets(Bullets** bullets){
+    (*bullets) = malloc(sizeof(Bullets));
+    if(!(*bullets)){
+        puts("falha ao tentar alocar bullets");
         return false;
     }
+
+    (*bullets)->firstBullet = NULL;
+
+
+    return true;
 }
 
 /*************************************************
  * Destrutores - desalocação de memória
  *************************************************/
 
-void dealloc_bullet(){
-    if(bullet){
-        al_destroy_bitmap(bullet->image);
-        free(bullet);
-        bullet = NULL;
-        puts("bullet desalocado");
+void dealloc_bullet(Bullet** bullet){
+    al_destroy_bitmap((*bullet)->image);
+    free(*bullet);
+    (*bullet) = NULL;
+    puts("bullet desalocado");
+}
+
+void dealloc_bullets(Bullets** bullets){
+
+    if(*bullets){
+
+        Bullet* bullet = (*bullets)->firstBullet;
+        Bullet* nextBullet = NULL;
+
+        while(bullet){
+
+            nextBullet = bullet->nextBullet;
+
+            /*al_destroy_bitmap(bullet->image);
+            free(bullet);
+            bullet = NULL;
+            puts("bullet desalocado");*/
+            dealloc_bullet(&bullet);
+
+            bullet = nextBullet;
+
+        }
+
+        free(*bullets);
+        puts("lista de bullets desalocada");
+
     }
+
 }
 
 // desaloca nave inimiga
@@ -296,20 +346,20 @@ void dealloc_ship(Ship* ship){
 }
 
 // desaloca nave player
-void dealloc_player_ship(){
-    if(player){
+void dealloc_player_ship(Player_ship** player){
+    if(*player){
         // desaloca base
-        dealloc_ship(player->base);
+        dealloc_ship((*player)->base);
         // desaloca com free
-        free(player);
-        player = NULL;
+        free(*player);
+        (*player) = NULL;
         puts("desalocado ship_player");
     }
 }
 
-void dealloc_ships_objects(){
-    dealloc_player_ship();
-    dealloc_bullet();
+void dealloc_ships_objects(Player_ship** player,Bullets** bullets){
+    dealloc_player_ship(player);
+    dealloc_bullets(bullets);
 }
 
 /*************************************************
@@ -320,14 +370,20 @@ void draw_ship(Ship* ship){
     al_draw_bitmap(ship->image, ship->location.position_x, ship->location.position_y, 0);
 }
 
-void draw_bullet(){
-    if(bullet)
+void draw_bullet(Bullets** bullets){
+
+    Bullet* bullet = (*bullets)->firstBullet;
+
+    while(bullet){
         al_draw_bitmap(bullet->image,bullet->x,bullet->y,0);
+        bullet = bullet->nextBullet;
+    }
+
 }
 
-void draw_ships_objects(){
-    draw_ship(player->base);
-    draw_bullet();
+void draw_ships_objects(Player_ship** player,Bullets** bullets){
+    draw_ship((*player)->base);
+    draw_bullet(bullets);
 }
 
 /**************************************************
@@ -354,37 +410,77 @@ Ship* getBase(Player_ship* ship){
     }
 }*/
 
-void update_bullet(){
-    if(bullet){
+void update_bullets(Bullets** bullets){
+
+    Bullet* bullet = (*bullets)->firstBullet;
+    Bullet* nextBullet = NULL;
+
+    while(bullet){
+
+        nextBullet = bullet->nextBullet;
+
         bullet->y -= 6;
+
         if(bullet->y < 5){
-            dealloc_bullet();
-            //al_destroy_bitmap(ship->base->fire.image);
-            //ship->base->fire.image = NULL;
+
+            if(bullet->previousBullet == NULL){
+
+                if(bullet->nextBullet == NULL){
+                    (*bullets)->firstBullet = NULL;
+                    dealloc_bullet(&bullet);
+                    //free(bullet);
+                }else{
+                    (*bullets)->firstBullet = bullet->nextBullet;
+                    (*bullets)->firstBullet->previousBullet = NULL;
+                    //free(bullet);
+                    dealloc_bullet(&bullet);
+                    bullet = NULL;
+                }
+            }
+
+            else if(bullet->nextBullet == NULL){
+                bullet->previousBullet->nextBullet = NULL;
+                //free(bullet);
+                dealloc_bullet(&bullet);
+                bullet = NULL;
+            }
+
+            else{
+
+                bullet->previousBullet->nextBullet = bullet->nextBullet;
+                bullet->nextBullet->previousBullet = bullet->previousBullet;
+                //free(bullet);
+                dealloc_bullet(&bullet);
+                bullet=NULL;
+            }
+
         }
+
+        bullet = nextBullet;
     }
 }
 
-void update_player(Window_game** window,Atlas_game** atlas, Mouse_game** mouse){
+void update_player(Player_ship** player, Bullets** bullets, Window_game** window,
+        Graphics_game** graphics, Controls_game** controls){
 
-    if(get_mouse_move_state(mouse)){
-        player->base->location.position_x = get_mouse_x(mouse)-(al_get_bitmap_width(player->base->image)/2);
-        player->base->location.position_y = get_mouse_y(mouse)-(al_get_bitmap_height(player->base->image)/2);
+    if(get_mouse_move_state(controls)){
+        (*player)->base->location.position_x = get_mouse_x(controls)-(al_get_bitmap_width((*player)->base->image)/2);
+        (*player)->base->location.position_y = get_mouse_y(controls)-(al_get_bitmap_height((*player)->base->image)/2);
     }
 
 
 
-    if(mouseIsClicked(mouse)){
-        int bullet_position_x = player->base->location.position_x +
-                    (al_get_bitmap_width(player->base->image)/2);
-        int bullet_position_y = player->base->location.position_y;
-        make_bullet(player->base->type,player->base->subtype,bullet_position_x,
-                        bullet_position_y,window,atlas);
+    if(mouseIsClicked(controls)){
+        int bullet_position_x = (*player)->base->location.position_x +
+                    (al_get_bitmap_width((*player)->base->image)/2);
+        int bullet_position_y = (*player)->base->location.position_y;
+        make_bullet(bullets,(*player)->base->type,(*player)->base->bullet_subtype,bullet_position_x,
+                        bullet_position_y,window,graphics);
     }
 
 }
 
-void update_ships_objects(Window_game** window,Atlas_game** atlas,Mouse_game** mouse){
-    update_player(window,atlas,mouse);
-    update_bullet();
+void update_ships_objects(Player_ship** player,Bullets** bullets,Window_game** window,Graphics_game** graphics,Controls_game** controls){
+    update_player(player,bullets,window,graphics,controls);
+    update_bullets(bullets);
 }

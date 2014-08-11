@@ -68,13 +68,6 @@ enum{
  ----------------------------------------------------*/
 typedef struct window_game Window_game;
 
-/* --------------------------------------------------
- * Estrutura Timer_game
- * --------------------------------------------------
- * Controla a quantidade de frames por segundo
- ----------------------------------------------------*/
-typedef struct timer_game Timer_game;
-
 
 /***************************************************
  * *************************************************
@@ -95,7 +88,7 @@ typedef struct timer_game Timer_game;
  * Window_game** window : ponteiro*** para Window_game
  * Timer_game** timer : ponteiro*** para Timer_game
  ------------------------------------------------------------------*/
-int create_window_game(Window_game** window, Timer_game** timer);
+int create_window_game(Window_game** window);
 
 
 
@@ -117,7 +110,7 @@ int create_window_game(Window_game** window, Timer_game** timer);
  * Window_game** window : ponteiro** para Window_game
  * Timer_game** timer : ponteiro** para Timer_game
  -------------------------------------------------------------------*/
-void dealloc_window(Window_game** window,Timer_game** timer);
+void dealloc_window(Window_game** window);
 
 
 
@@ -138,7 +131,7 @@ void dealloc_window(Window_game** window,Timer_game** timer);
  * Parâmetros:
  * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------*/
-void start_timer(Timer_game** timer);
+void start_timer(Window_game** window);
 
 /* -----------------------------------------------------------------
  * Retorna o valor de exit da janela
@@ -213,6 +206,6 @@ int set_mouse_cursor_window(Window_game** window);
  * Window_game** window : ponteiro** para Window_game
  * Timer_game** timer : ponteiro** para Timer_game
  ---------------------------------------------------------------*/
-void check_event_queue_window(Window_game** window, Timer_game** timer);
+void check_event_queue_window(Window_game** window);
 
 #endif /* WINDOW_H_ */

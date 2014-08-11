@@ -41,6 +41,22 @@
 
 
 /****************************************************
+ * **************************************************
+ * Estruturas
+ * **************************************************
+ ****************************************************/
+
+/* --------------------------------------------------------
+ * Nave do jogador
+ ----------------------------------------------------------*/
+typedef struct player_ship Player_ship;
+
+typedef struct bullet Bullet;
+
+typedef struct bullets Bullets;
+
+
+/****************************************************
  * Construtores
  ****************************************************/
 
@@ -53,20 +69,22 @@
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-int new_player_ship(const char *subtype,Window_game** window,Atlas_game** atlas);
+int new_player_ship(Player_ship** player, const char *subtype,Window_game** window,Graphics_game** graphics);
 
+int makeListofBullets(Bullets** bullets);
 /*************************************************
  * Destrutores - desalocação de memória
  *************************************************/
 
-void dealloc_ships_objects();
+void dealloc_ships_objects(Player_ship** player, Bullets** bullets);
 
 /*************************************************
  * Funções comuns para todas as naves
  *************************************************/
 
-void draw_ships_objects();
+void draw_ships_objects(Player_ship** player, Bullets** bullets);
 
-void update_ships_objects(Window_game** window,Atlas_game** atlas,Mouse_game** mouse);
+void update_ships_objects(Player_ship** player,Bullets** bullets, Window_game** window,
+        Graphics_game** graphics, Controls_game** controls);
 
 #endif /* SHIPS_H_ */

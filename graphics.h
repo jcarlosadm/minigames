@@ -41,9 +41,12 @@
  *************************************************************/
 
 /* -------------------------------------------------
- * Estrutura relativa ao atlas do jogo
+ * Estrutura relativa aos gráficos do jogo
+ * -------------------------------------------------
+ * Possui:
+ * - atlas
  ---------------------------------------------------*/
-typedef struct atlas_game Atlas_game;
+typedef struct graphics_game Graphics_game;
 
 
 /*************************************************************
@@ -60,7 +63,7 @@ typedef struct atlas_game Atlas_game;
  * Parâmetros:
  * Atlas_game** atlas : ponteiro*** para Atlas_game
  ------------------------------------------------------------*/
-int create_atlas(Atlas_game** atlas);
+int create_graphics(Graphics_game** graphics);
 
 
 /*********************************************************************
@@ -77,7 +80,7 @@ int create_atlas(Atlas_game** atlas);
  * Parâmetros:
  * Atlas_game** atlas : ponteiro** para Atlas_game
  -----------------------------------------------------------------*/
-void dealloc_atlas(Atlas_game** atlas);
+void dealloc_graphics(Graphics_game** graphics);
 
 
 
@@ -96,6 +99,6 @@ void dealloc_atlas(Atlas_game** atlas);
  * Atlas_game** atlas : ponteiro** para Atlas_game
  ---------------------------------------------------------------------*/
 ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window,
-        Atlas_game** atlas);
+        Graphics_game** graphics);
 
 #endif /* GRAPHICS_H_ */

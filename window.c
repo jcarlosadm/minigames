@@ -12,6 +12,21 @@
  * ************************************************
  **************************************************/
 
+/* ------------------------------------------------------------------
+ * Estrutura Timer_game
+ * ------------------------------------------------------------------
+ * Membros:
+ * ALLEGRO_TIMER *timer : objeto allegro de controle de tempo
+ * ALLEGRO_EVENT_QUEUE *event_queue_time : objeto allegro de evento que
+ *                                         verifica alterações no timer
+ --------------------------------------------------------------------*/
+typedef struct timer_game{
+    // objetos allegro
+    ALLEGRO_TIMER *timer;
+    ALLEGRO_EVENT_QUEUE *event_queue_time;
+}Timer_game;
+
+
 /* --------------------------------------------------------------------------------------
  * Estrutura Window_game
  * --------------------------------------------------------------------------------------
@@ -28,27 +43,13 @@ typedef struct window_game {
     // Objetos do Allegro
     ALLEGRO_DISPLAY *window;
     ALLEGRO_EVENT_QUEUE *event_queue_window;
+    Timer_game* timer;
 
     // flags da janela
     int exit;
     int tick;
     int current_window;
 }Window_game;
-
-/* ------------------------------------------------------------------
- * Estrutura Timer_game
- * ------------------------------------------------------------------
- * Membros:
- * ALLEGRO_TIMER *timer : objeto allegro de controle de tempo
- * ALLEGRO_EVENT_QUEUE *event_queue_time : objeto allegro de evento que
- *                                         verifica alterações no timer
- --------------------------------------------------------------------*/
-typedef struct timer_game{
-    // objetos allegro
-    ALLEGRO_TIMER *timer;
-    ALLEGRO_EVENT_QUEUE *event_queue_time;
-}Timer_game;
-
 
 /**************************************************
  * ************************************************
@@ -59,7 +60,7 @@ typedef struct timer_game{
 // protótipos necessários (veja essas funções mais adiante)
 void register_event_queue_window(Window_game** window);
 int generate_event_queue_window(Window_game **window);
-int build_timer(Timer_game** timer);
+int build_timer(Window_game** window);
 
 /* ---------------------------------------------------------------
  * Aloca memória para objeto window, do tipo Window_game
@@ -70,7 +71,7 @@ int build_timer(Timer_game** timer);
  * Window_game** window : ponteiro*** para Window_game
  * Timer_game** timer : ponteiro*** para Timer_game
  -----------------------------------------------------------------*/
-int create_window_game(Window_game** window, Timer_game** timer){
+int create_window_game(Window_game** window){
 
     /*
      * Declaração de variáveis locais
@@ -140,8 +141,14 @@ int create_window_game(Window_game** window, Timer_game** timer){
     // registra eventos da janela
     register_event_queue_window(window);
 
-    // gera timer
-    build_timer(timer);
+    // tenta criar timer
+    if(!build_timer(window)){
+        al_destroy_event_queue((*window)->event_queue_window);
+        al_destroy_display((*window)->window);
+        free(*window);
+
+        return false;
+    }
 
     // sai da função com sucesso
     return true;
@@ -178,38 +185,39 @@ int generate_event_queue_window(Window_game **window){
  * Parâmetros:
  * Timer_game** timer : ponteiro** para Timer_game
  -------------------------------------------------------------------------*/
-int build_timer(Timer_game** timer){
+int build_timer(Window_game** window){
 
     // tenta alocar memória para o objeto timer
-    (*timer) = (Timer_game*)malloc(sizeof(Timer_game));
+    (*window)->timer = malloc(sizeof(Timer_game));
     // se não conseguir, retorna false
-    if(!*timer){
+    if(!(*window)->timer){
         fprintf(stderr, "falha ao alocar objeto Timer_game\n");
         return false;
     }
 
     // tenta alocar objeto ALLEGRO_TIMER
-    (*timer)->timer = (ALLEGRO_TIMER*) al_create_timer(1.0 / FPS_GAME);
+    (*window)->timer->timer = (ALLEGRO_TIMER*) al_create_timer(1.0 / FPS_GAME);
     // se falhar, libera memória de timer e sai com erro
-    if(!(*timer)->timer) {
+    if(!(*window)->timer->timer) {
         fprintf(stderr, "falha ao alocar objeto ALLEGRO_TIMER\n");
-        free(*timer);
+        free((*window)->timer);
         return false;
     }
 
     // tenta alocar memória para a lista de eventos do timer
-    (*timer)->event_queue_time = al_create_event_queue();
+    (*window)->timer->event_queue_time = al_create_event_queue();
     // se não conseguir, desaloca objetos ALLEGRO_TIMER e Timer_game
     // e sai com false
-    if(!(*timer)->event_queue_time) {
+    if(!(*window)->timer->event_queue_time) {
         fprintf(stderr, "falha ao criar lista de eventos de tempo\n");
-        al_destroy_timer((*timer)->timer);
-        free(*timer);
+        al_destroy_timer((*window)->timer->timer);
+        free((*window)->timer);
         return false;
     }
 
     // se conseguiu, registra eventos do timer
-    al_register_event_source((*timer)->event_queue_time, al_get_timer_event_source((*timer)->timer));
+    al_register_event_source((*window)->timer->event_queue_time,
+            al_get_timer_event_source((*window)->timer->timer));
 
     return true;
 }
@@ -229,16 +237,16 @@ int build_timer(Timer_game** timer){
  * Parâmetros:
  * Timer_game** timer : ponteiro** para Timer_game
  ---------------------------------------------------------------*/
-void dealloc_timer(Timer_game** timer){
+void dealloc_timer(Window_game** window){
     // se timer estiver alocado
-    if(*timer){
+    if((*window)->timer){
         // desaloca objeto ALLEGRO_TIMER
-        al_destroy_timer((*timer)->timer);
+        al_destroy_timer((*window)->timer->timer);
         // desaloca objeto ALLEGRO_EVENT_QUEUE
-        al_destroy_event_queue((*timer)->event_queue_time);
+        al_destroy_event_queue((*window)->timer->event_queue_time);
         // desaloca objeto Timer_game
-        free(*timer);
-        (*timer) = NULL;
+        free((*window)->timer);
+        (*window)->timer = NULL;
         // informa
         puts("objeto Timer_game desalocado");
     }
@@ -253,21 +261,21 @@ void dealloc_timer(Timer_game** timer){
  * Window_game** window : ponteiro** para Window_game
  * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------*/
-void dealloc_window(Window_game** window,Timer_game** timer){
+void dealloc_window(Window_game** window){
     // se window estiver alocada
     if(*window){
         // desaloca memória do objeto ALLEGRO_DISPLAY
         al_destroy_display((*window)->window);
         // desaloca memória do objeto ALLEGRO_EVENT_QUEUE
         al_destroy_event_queue((*window)->event_queue_window);
+        // desaloca timer
+        dealloc_timer(window);
         // desaloca memória do objeto Window_game
         free(*window);
         (*window) = NULL;
         // informa
         puts("desalocado window");
 
-        // desaloca timer
-        dealloc_timer(timer);
     }
 }
 
@@ -283,8 +291,8 @@ void dealloc_window(Window_game** window,Timer_game** timer){
  * Parâmetros:
  * Timer_game** timer : ponteiro** para Timer_game
  --------------------------------------------------------------*/
-void start_timer(Timer_game** timer){
-    al_start_timer((*timer)->timer);
+void start_timer(Window_game** window){
+    al_start_timer((*window)->timer->timer);
 }
 
 /* ---------------------------------------------------------------
@@ -373,16 +381,16 @@ void register_event_queue_window(Window_game** window){
  * Window_game** window : ponteiro** para Window_game
  * Timer_game** timer : ponteiro** para Timer_game
  ----------------------------------------------------------------------*/
-void check_event_queue_timer(Timer_game** timer, Window_game** window){
+void check_event_queue_timer(Window_game** window){
 
     // variável que armazenará um evento
     ALLEGRO_EVENT event;
 
     // enquanto a lista de eventos não for vazia
-    while (!(al_is_event_queue_empty((*timer)->event_queue_time))){
+    while (!(al_is_event_queue_empty((*window)->timer->event_queue_time))){
 
         // pega um evento da lista de eventos de tempo e põe em event
-        al_wait_for_event((*timer)->event_queue_time, &event);
+        al_wait_for_event((*window)->timer->event_queue_time, &event);
 
         // se o evento for de timer...
         if(event.type == ALLEGRO_EVENT_TIMER){
@@ -399,7 +407,7 @@ void check_event_queue_timer(Timer_game** timer, Window_game** window){
  * Window_game** window : ponteiro** para Window_game
  * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------------------*/
-void check_event_queue_window(Window_game** window, Timer_game** timer){
+void check_event_queue_window(Window_game** window){
 
     // declara variável de captura de eventos
     ALLEGRO_EVENT event;
@@ -418,5 +426,5 @@ void check_event_queue_window(Window_game** window, Timer_game** timer){
     }
 
     // verifica eventos do timer
-    check_event_queue_timer(timer,window);
+    check_event_queue_timer(window);
 }
