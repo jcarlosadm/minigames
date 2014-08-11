@@ -53,7 +53,7 @@
  * power : nível de poder de tiro da nave
  * speed : velocidade da nave
  */
-int new_player_ship(const char *subtype,Window_game** window);
+int new_player_ship(const char *subtype,Window_game** window,Atlas_game** atlas);
 
 /*************************************************
  * Destrutores - desalocação de memória
@@ -67,6 +67,6 @@ void dealloc_ships_objects();
 
 void draw_ships_objects();
 
-void update_ships_objects(Window_game** window);
+void update_ships_objects(Window_game** window,Atlas_game** atlas);
 
 #endif /* SHIPS_H_ */

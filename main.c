@@ -17,9 +17,9 @@
  * protótipos necessários (veja a descrição dessas funções mais abaixo, após main)
  ----------------------------------------------------------------------------------*/
 // inicialização
-int basic_alloc(Window_game** window,Timer_game** timer);
+int basic_alloc(Window_game** window,Timer_game** timer,Atlas_game** atlas);
 // finalização
-void basic_dealloc(Window_game** window,Timer_game** timer);
+void basic_dealloc(Window_game** window,Timer_game** timer,Atlas_game** atlas);
 
 /*---------------------------------------------------------------------------------
  * main
@@ -34,13 +34,15 @@ int main()
     Window_game* window;
     // timer
     Timer_game* timer;
+    // atlas
+    Atlas_game* atlas;
 
     /*------------------------------------------
      * Inicialização
      -------------------------------------------*/
 
     // se falhar na inicialização, finaliza programa
-    if(!basic_alloc(&window,&timer)){
+    if(!basic_alloc(&window,&timer,&atlas)){
         fprintf(stderr, "falha ao inicializar\n");
         exit(EXIT_FAILURE);
     }
@@ -50,8 +52,8 @@ int main()
      ---------------------------------------------*/
 
     // se falhar e alocar player, desaloca memória alocada e finaliza programa
-    if(!new_player_ship("blue",&window)){
-        basic_dealloc(&window,&timer);
+    if(!new_player_ship("blue",&window,&atlas)){
+        basic_dealloc(&window,&timer,&atlas);
         exit(EXIT_FAILURE);
     }
 
@@ -83,7 +85,7 @@ int main()
             check_event_queue_controls();
 
             // atualizar naves (player e enemies) e tiros
-            update_ships_objects(&window);
+            update_ships_objects(&window,&atlas);
 
             /* --------------------------------------------------------
              * Desenho
@@ -115,7 +117,7 @@ int main()
      --------------------------------------------*/
 
     // desaloca memória alocada
-    basic_dealloc(&window,&timer);
+    basic_dealloc(&window,&timer,&atlas);
 
     // fecha programa com sucesso
     return EXIT_SUCCESS;
@@ -133,7 +135,7 @@ int main()
  * Se sucesso, retorna true
  * Caso contrário, desaloca o que foi alocado e retorna false
  --------------------------------------------------------------------------*/
-int basic_alloc(Window_game** window, Timer_game** timer){
+int basic_alloc(Window_game** window, Timer_game** timer,Atlas_game** atlas){
 
     // guarda true se sucesso e false se fracasso
     int success = true;
@@ -154,13 +156,13 @@ int basic_alloc(Window_game** window, Timer_game** timer){
     if(success && !start_controls(window)) success = false;
 
     // tenta carregar atlas
-    if(success && !create_atlas()) success = false;
+    if(success && !create_atlas(atlas)) success = false;
 
     // se não for bem sucedido em alguma inicialização, desaloca o que foi alocado
     if(!success){
         dealloc_controls();
         dealloc_window(window,timer);
-        dealloc_atlas();
+        dealloc_atlas(atlas);
         return success;
     }
 
@@ -173,14 +175,14 @@ int basic_alloc(Window_game** window, Timer_game** timer){
  * --------------------------------------------------------------------
  * Desaloca player, desaloca controls, desaloca atlas e window
  ----------------------------------------------------------------------*/
-void basic_dealloc(Window_game** window,Timer_game** timer){
+void basic_dealloc(Window_game** window,Timer_game** timer,Atlas_game** atlas){
 
     // desaloca naves (player e enemies) e tiros
     dealloc_ships_objects();
     // desaloca controles
     dealloc_controls();
     // desaloca atlas
-    dealloc_atlas();
+    dealloc_atlas(atlas);
     // desaloca window
     dealloc_window(window,timer);
 

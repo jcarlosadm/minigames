@@ -43,16 +43,6 @@ typedef struct atlas_game{
 
 /***************************************************************
  * *************************************************************
- * Objetos do módulo
- * *************************************************************
- ***************************************************************/
-
-// atlas
-Atlas_game* atlas;
-
-
-/***************************************************************
- * *************************************************************
  * Construtores
  * *************************************************************
  ***************************************************************/
@@ -61,22 +51,26 @@ Atlas_game* atlas;
  * Carrega e aloca o atlas do jogo
  * -------------------------------------------------------------
  * Retorna false se não conseguir
+ * -------------------------------------------------------------
+ * Parâmetros:
+ * Atlas_game** atlas : ponteiro*** para Atlas_game
  ---------------------------------------------------------------*/
-int create_atlas(){
+int create_atlas(Atlas_game** atlas){
     // tenta alocar objeto atlas
-    atlas = (Atlas_game*)malloc(sizeof(Atlas_game));
+    (*atlas) = (Atlas_game*)malloc(sizeof(Atlas_game));
     // se não conseguir, informa e retorna false
-    if(!atlas){
+    if(!(*atlas)){
         fprintf(stderr, "erro ao alocar o atlas\n");
         return false;
     }
 
     // tenta alocar objeto ALLEGRO_BITMAP do allegro
-    atlas->atlas = al_load_bitmap(ATLAS_NAME);
+    (*atlas)->atlas = al_load_bitmap(ATLAS_NAME);
     // se não conseguir, informa, desaloca atlas e retorna false
-    if(atlas->atlas == NULL){
+    if((*atlas)->atlas == NULL){
         fprintf(stderr, "erro ao alocar a imagem do atlas\n");
-        free(atlas);
+        free(*atlas);
+        (*atlas) = NULL;
         return false;
     }
 
@@ -94,15 +88,18 @@ int create_atlas(){
 
 /* ----------------------------------------------------------
  * Desaloca objeto atlas
+ * ----------------------------------------------------------
+ * Parâmetros:
+ * Atlas_game** atlas : ponteiro** para Atlas_game
  ------------------------------------------------------------*/
-void dealloc_atlas(){
+void dealloc_atlas(Atlas_game** atlas){
     // se o objeto atlas estiver alocado...
-    if(atlas){
+    if(*atlas){
         // destroi o objeto ALLEGRO_BITMAP
-        al_destroy_bitmap(atlas->atlas);
+        al_destroy_bitmap((*atlas)->atlas);
         // desaloca objeto atlas
-        free(atlas);
-        atlas = NULL;
+        free(*atlas);
+        (*atlas) = NULL;
         // informa
         puts("desalocacao do atlas bem sucedida");
     }
@@ -183,8 +180,11 @@ int load_information_bitmap_from_atlas(const char* bitmap_name, Bitmap_info* inf
  * -----------------------------------------------------------------------------------------
  * Parâmetros:
  * const char* bitmap_name : nome do bitmap a ser retornado
+ * Window_game** window : ponteiro** para Window_game
+ * Atlas_game** atlas : ponteiro** para Atlas_game
  -------------------------------------------------------------------------------------------*/
-ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window){
+ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window,
+        Atlas_game** atlas){
 
     // estrutura que conterá informações do bitmap
     Bitmap_info info;
@@ -204,7 +204,7 @@ ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** w
     al_set_target_bitmap(bitmap);
 
     // desenha parte do atlas no bitmap criado de acordo com as informações pesquisadas
-    al_draw_bitmap_region(atlas->atlas,info.position_x,info.position_y,info.width,info.height,0,0,0);
+    al_draw_bitmap_region((*atlas)->atlas,info.position_x,info.position_y,info.width,info.height,0,0,0);
 
     // retorna a janela de jogo como local de desenho
     set_draw_current_window_game(&(*window));

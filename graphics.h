@@ -34,6 +34,17 @@
 #define ATLAS_XML "resources/images/atlas/sheet.xml"
 
 
+/*************************************************************
+ * ***********************************************************
+ * Estruturas
+ * ***********************************************************
+ *************************************************************/
+
+/* -------------------------------------------------
+ * Estrutura relativa ao atlas do jogo
+ ---------------------------------------------------*/
+typedef struct atlas_game Atlas_game;
+
 
 /*************************************************************
  * ***********************************************************
@@ -46,10 +57,10 @@
  * ----------------------------------------------------------
  * Retorna false se não conseguir
  * ----------------------------------------------------------
- * Nota: esse módulo possui um objeto interno que representa
- * a imagem do atlas. Essa função irá alocar esse objeto.
+ * Parâmetros:
+ * Atlas_game** atlas : ponteiro*** para Atlas_game
  ------------------------------------------------------------*/
-int create_atlas();
+int create_atlas(Atlas_game** atlas);
 
 
 /*********************************************************************
@@ -62,8 +73,11 @@ int create_atlas();
  * Desaloca objeto atlas
  * ---------------------------------------------------------------
  * Use essa função após o loop principal do jogo
+ * ---------------------------------------------------------------
+ * Parâmetros:
+ * Atlas_game** atlas : ponteiro** para Atlas_game
  -----------------------------------------------------------------*/
-void dealloc_atlas();
+void dealloc_atlas(Atlas_game** atlas);
 
 
 
@@ -78,7 +92,10 @@ void dealloc_atlas();
  * -------------------------------------------------------------------
  * Parâmetros:
  * const char* bitmap_name : nome do bitmap presente no atlas
+ * Window_game** window : ponteiro** para Window_game
+ * Atlas_game** atlas : ponteiro** para Atlas_game
  ---------------------------------------------------------------------*/
-ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window);
+ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window,
+        Atlas_game** atlas);
 
 #endif /* GRAPHICS_H_ */

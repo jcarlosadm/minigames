@@ -67,8 +67,8 @@ int build_timer(Timer_game** timer);
  * Retorna false se falhar
  * ---------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro*** para Window_game
+ * Timer_game** timer : ponteiro*** para Timer_game
  -----------------------------------------------------------------*/
 int create_window_game(Window_game** window, Timer_game** timer){
 
@@ -153,7 +153,7 @@ int create_window_game(Window_game** window, Timer_game** timer){
  * Retorna false se não conseguir gerar a lista
  * -----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -------------------------------------------------------------------*/
 int generate_event_queue_window(Window_game **window){
     // aloca lista de eventos
@@ -176,7 +176,7 @@ int generate_event_queue_window(Window_game **window){
  * Retorna false se não conseguir
  * -----------------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Timer_game** timer : ponteiro** para Timer_game
  -------------------------------------------------------------------------*/
 int build_timer(Timer_game** timer){
 
@@ -227,7 +227,7 @@ int build_timer(Timer_game** timer){
  * Timer_game
  * -------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ---------------------------------------------------------------*/
 void dealloc_timer(Timer_game** timer){
     // se timer estiver alocado
@@ -250,8 +250,8 @@ void dealloc_timer(Timer_game** timer){
  * desaloca memória dos objetos allegro e do objeto Window_game
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro** para Window_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------*/
 void dealloc_window(Window_game** window,Timer_game** timer){
     // se window estiver alocada
@@ -281,7 +281,7 @@ void dealloc_window(Window_game** window,Timer_game** timer){
  * Inicia timer
  * ------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Timer_game** timer : ponteiro** para Timer_game
  --------------------------------------------------------------*/
 void start_timer(Timer_game** timer){
     al_start_timer((*timer)->timer);
@@ -291,7 +291,7 @@ void start_timer(Timer_game** timer){
  * Retorna valor de exit da janela
  * ---------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -----------------------------------------------------------------*/
 int get_window_exit_value(Window_game** window){
     return (*window)->exit;
@@ -301,7 +301,7 @@ int get_window_exit_value(Window_game** window){
  * Retorna valor de tick da janela
  * ---------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -----------------------------------------------------------------*/
 int get_window_tick(Window_game** window){
     return (*window)->tick;
@@ -311,7 +311,7 @@ int get_window_tick(Window_game** window){
  * Configura exit da janela para true
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 void set_window_exit_true(Window_game** window){
     (*window)->exit = true;
@@ -321,7 +321,7 @@ void set_window_exit_true(Window_game** window){
  * Configura valor tick de window para false
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 void set_window_tick_false(Window_game** window){
     (*window)->tick = false;
@@ -331,7 +331,7 @@ void set_window_tick_false(Window_game** window){
  * Torna window o local atual de desenho
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 void set_draw_current_window_game(Window_game** window){
     al_set_target_bitmap(al_get_backbuffer((*window)->window));
@@ -343,7 +343,7 @@ void set_draw_current_window_game(Window_game** window){
  * Retorna false se não for possível configurar
  * --------------------------------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ----------------------------------------------------------------------------------------*/
 int set_mouse_cursor_window(Window_game** window){
     // tenta atribuir cursor do mouse
@@ -360,7 +360,7 @@ int set_mouse_cursor_window(Window_game** window){
  * Registra eventos da janela na lista de eventos da janela
  * ---------------------------------------------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -----------------------------------------------------------------------------------------------------*/
 void register_event_queue_window(Window_game** window){
     al_register_event_source((*window)->event_queue_window, al_get_display_event_source((*window)->window));
@@ -370,8 +370,8 @@ void register_event_queue_window(Window_game** window){
  * Checa eventos do timer
  * --------------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro** para Window_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ----------------------------------------------------------------------*/
 void check_event_queue_timer(Timer_game** timer, Window_game** window){
 
@@ -396,8 +396,8 @@ void check_event_queue_timer(Timer_game** timer, Window_game** window){
  * Checa eventos da janela
  * ----------------------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro** para Window_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------------------*/
 void check_event_queue_window(Window_game** window, Timer_game** timer){
 

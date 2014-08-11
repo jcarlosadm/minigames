@@ -92,8 +92,8 @@ typedef struct timer_game Timer_game;
  * Retorna false se não for bem sucedido
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro*** para Window_game
+ * Timer_game** timer : ponteiro*** para Timer_game
  ------------------------------------------------------------------*/
 int create_window_game(Window_game** window, Timer_game** timer);
 
@@ -114,8 +114,8 @@ int create_window_game(Window_game** window, Timer_game** timer);
  * Execute após o loop principal do jogo
  * -----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro** para Window_game
+ * Timer_game** timer : ponteiro** para Timer_game
  -------------------------------------------------------------------*/
 void dealloc_window(Window_game** window,Timer_game** timer);
 
@@ -136,7 +136,7 @@ void dealloc_window(Window_game** window,Timer_game** timer);
  * segundo do jogo
  * ----------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------*/
 void start_timer(Timer_game** timer);
 
@@ -150,7 +150,7 @@ void start_timer(Timer_game** timer);
  * (use na verificação do while principal)
  * -----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -------------------------------------------------------------------*/
 int get_window_exit_value(Window_game** window);
 
@@ -170,7 +170,7 @@ int get_window_exit_value(Window_game** window);
  * no jogo deve ficar dentro desse if
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 int get_window_tick(Window_game** window);
 
@@ -181,7 +181,7 @@ int get_window_tick(Window_game** window);
  * principal do jogo
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 void set_window_tick_false(Window_game** window);
 
@@ -192,7 +192,7 @@ void set_window_tick_false(Window_game** window);
  * desejar voltar a desenhar na janela
  * ---------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  -----------------------------------------------------------------*/
 void set_draw_current_window_game(Window_game** window);
 
@@ -202,7 +202,7 @@ void set_draw_current_window_game(Window_game** window);
  * Retorna false se não conseguir
  * ------------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
+ * Window_game** window : ponteiro** para Window_game
  --------------------------------------------------------------------*/
 int set_mouse_cursor_window(Window_game** window);
 
@@ -210,8 +210,8 @@ int set_mouse_cursor_window(Window_game** window);
  * Verifica eventos da janela e timer e os executa
  * -------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro para ponteiro para Window_game
- * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ * Window_game** window : ponteiro** para Window_game
+ * Timer_game** timer : ponteiro** para Timer_game
  ---------------------------------------------------------------*/
 void check_event_queue_window(Window_game** window, Timer_game** timer);
 
