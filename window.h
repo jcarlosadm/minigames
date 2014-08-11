@@ -55,6 +55,26 @@ enum{
 };
 
 
+/**************************************************
+ * ************************************************
+ * Estruturas
+ * ************************************************
+ **************************************************/
+
+/* --------------------------------------------------
+ * Estrutura Window_game
+ * --------------------------------------------------
+ * A janela de jogo
+ ----------------------------------------------------*/
+typedef struct window_game Window_game;
+
+/* --------------------------------------------------
+ * Estrutura Timer_game
+ * --------------------------------------------------
+ * Controla a quantidade de frames por segundo
+ ----------------------------------------------------*/
+typedef struct timer_game Timer_game;
+
 
 /***************************************************
  * *************************************************
@@ -62,19 +82,20 @@ enum{
  * *************************************************
  ***************************************************/
 
-/* -----------------------------------------------------------
+/* ----------------------------------------------------------------
  * Cria a janela de jogo
- * -----------------------------------------------------------
+ * ----------------------------------------------------------------
  * Aloca memória no objeto Window_game (a janela de jogo),
  * cria lista de eventos da janela e lista de eventos do
  * timer (que controlará o FPS)
  *
  * Retorna false se não for bem sucedido
- * -----------------------------------------------------------
- * Nota: há um objeto window visível apenas dentro do módulo.
- * Esse objeto é alocado quando essa função é executada.
- -------------------------------------------------------------*/
-int create_window_game();
+ * ----------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ ------------------------------------------------------------------*/
+int create_window_game(Window_game** window, Timer_game** timer);
 
 
 
@@ -84,15 +105,19 @@ int create_window_game();
  * ************************************************
  **************************************************/
 
-/* -----------------------------------------------------------
- * Desaloca objeto Window_game do módulo
- * -----------------------------------------------------------
+/* -----------------------------------------------------------------
+ * Desaloca objeto Window_game
+ * -----------------------------------------------------------------
  * Desaloca objeto display, a lista de eventos da janela,
  * o objeto Window_game e a lista de eventos do timer
  *
  * Execute após o loop principal do jogo
- -------------------------------------------------------------*/
-void dealloc_window();
+ * -----------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ -------------------------------------------------------------------*/
+void dealloc_window(Window_game** window,Timer_game** timer);
 
 
 
@@ -102,30 +127,36 @@ void dealloc_window();
  * ************************************************
  **************************************************/
 
-/* ------------------------------------------------
+/* ---------------------------------------------------------------
  * Inicia timer
- * ------------------------------------------------
+ * ---------------------------------------------------------------
  * Use antes do loop principal do jogo
  *
  * O timer controla a quantidade de frames por
  * segundo do jogo
- --------------------------------------------------*/
-void start_timer();
+ * ----------------------------------------------------------------
+ * Parâmetros:
+ * Timer_game** timer : ponteiro para ponteiro para Timer_game
+ ------------------------------------------------------------------*/
+void start_timer(Timer_game** timer);
 
-/* ----------------------------------------------
+/* -----------------------------------------------------------------
  * Retorna o valor de exit da janela
- * ----------------------------------------------
+ * -----------------------------------------------------------------
  * Retorno true ou false
  *
  * O valor de exit é usado para verificar
  * se o loop principal deve continuar executando
  * (use na verificação do while principal)
- ------------------------------------------------*/
-int get_window_exit_value();
+ * -----------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ -------------------------------------------------------------------*/
+int get_window_exit_value(Window_game** window);
 
-/* ---------------------------------------
+/* --------------------------------------------------------------
  * Retorna o valor de tick da janela
- * ---------------------------------------
+ * --------------------------------------------------------------
  * Retorno true ou false
  *
  * O valor de tick é usado para verificar
@@ -133,39 +164,55 @@ int get_window_exit_value();
  * de jogo, para ajustar de acordo com o
  * FPS_GAME especificado
  *
- * Crie um loop dentro do loop principal
+ * Crie um if dentro do loop principal
  * e use essa função para verificar se
- * esse loop deve ser executado. tudo
- * no jogo deve ficar dentro desse loop
- -----------------------------------------*/
-int get_window_tick();
+ * esse if deve ser executado. tudo
+ * no jogo deve ficar dentro desse if
+ * ----------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ ------------------------------------------------------------------*/
+int get_window_tick(Window_game** window);
 
-/* -------------------------------------------------
+/* ----------------------------------------------------------------
  * Configura o valor de tick da janela para false
- * -------------------------------------------------
- * Use no final da execução do loop interno ao loop
+ * ----------------------------------------------------------------
+ * Use no final da execução do if interno ao loop
  * principal do jogo
- ---------------------------------------------------*/
-void set_window_tick_false();
+ * ----------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ ------------------------------------------------------------------*/
+void set_window_tick_false(Window_game** window);
 
-/* --------------------------------------------------
+/* ---------------------------------------------------------------
  * Coloca a janela como local de desenho atual
- * --------------------------------------------------
+ * ---------------------------------------------------------------
  * Chame-a sempre que desenhar em outro local e
  * desejar voltar a desenhar na janela
- ----------------------------------------------------*/
-void set_draw_current_window_game();
+ * ---------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ -----------------------------------------------------------------*/
+void set_draw_current_window_game(Window_game** window);
 
 /* ------------------------------------------------------------------
  * Configura o mouse para usar o cursor padrão do sistema na janela
  * ------------------------------------------------------------------
  * Retorna false se não conseguir
+ * ------------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
  --------------------------------------------------------------------*/
-int set_mouse_cursor_window();
+int set_mouse_cursor_window(Window_game** window);
 
 /* -------------------------------------------------------------
  * Verifica eventos da janela e timer e os executa
+ * -------------------------------------------------------------
+ * Parâmetros:
+ * Window_game** window : ponteiro para ponteiro para Window_game
+ * Timer_game** timer : ponteiro para ponteiro para Timer_game
  ---------------------------------------------------------------*/
-void check_event_queue_window();
+void check_event_queue_window(Window_game** window, Timer_game** timer);
 
 #endif /* WINDOW_H_ */

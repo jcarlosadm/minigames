@@ -79,6 +79,6 @@ void dealloc_atlas();
  * Parâmetros:
  * const char* bitmap_name : nome do bitmap presente no atlas
  ---------------------------------------------------------------------*/
-ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name);
+ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window);
 
 #endif /* GRAPHICS_H_ */

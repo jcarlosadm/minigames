@@ -184,7 +184,7 @@ int load_information_bitmap_from_atlas(const char* bitmap_name, Bitmap_info* inf
  * Parâmetros:
  * const char* bitmap_name : nome do bitmap a ser retornado
  -------------------------------------------------------------------------------------------*/
-ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name){
+ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window){
 
     // estrutura que conterá informações do bitmap
     Bitmap_info info;
@@ -207,7 +207,7 @@ ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name){
     al_draw_bitmap_region(atlas->atlas,info.position_x,info.position_y,info.width,info.height,0,0,0);
 
     // retorna a janela de jogo como local de desenho
-    set_draw_current_window_game();
+    set_draw_current_window_game(&(*window));
 
     // retorna o bitmap criado
     return bitmap;

@@ -90,7 +90,7 @@ void initialize_loc_dim(Location* loc, Dimension* dim, float position_x,
 }
 
 // aloca nave inimiga ou base para o player
-Ship* new_ship(const char *type, const char *subtype){
+Ship* new_ship(const char *type, const char *subtype,Window_game** window){
 
 
     FILE * file;
@@ -148,7 +148,7 @@ Ship* new_ship(const char *type, const char *subtype){
     printf("power %d, speed %.0f \n",ship->attr.power,ship->attr.speed);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
-    ship->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"));
+    ship->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
     initialize_loc_dim(&(ship->location),&(ship->dimension),atof(mxmlElementGetAttr(node,"x")),
@@ -180,7 +180,7 @@ Ship* new_ship(const char *type, const char *subtype){
 }
 
 // aloca nave do player
-int new_player_ship(const char *subtype){
+int new_player_ship(const char *subtype,Window_game** window){
     // aloca nave com malloc
     player = (Player_ship*) malloc (sizeof(Player_ship));
 
@@ -190,7 +190,7 @@ int new_player_ship(const char *subtype){
     }
 
     // constrói a base
-    player->base = new_ship("player",subtype);
+    player->base = new_ship("player",subtype,window);
 
     if(player->base == NULL){
         fprintf(stderr, "falha ao alocar base de Player_ship\n");
@@ -202,7 +202,8 @@ int new_player_ship(const char *subtype){
     return true;
 }
 
-int make_bullet(const char* type, const char* subtype, float position_x, float position_y){
+int make_bullet(const char* type, const char* subtype, float position_x, float position_y,
+        Window_game** window){
 
     if(!bullet){
 
@@ -251,7 +252,7 @@ int make_bullet(const char* type, const char* subtype, float position_x, float p
         printf("power %d, speed %.0f \n",bullet->power,bullet->speed);
 
         node = mxmlWalkNext(node, tree, MXML_DESCEND);
-        bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"));
+        bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window);
 
         mxmlDelete(tree);
 
@@ -364,7 +365,7 @@ void update_bullet(){
     }
 }
 
-void update_player(){
+void update_player(Window_game** window){
 
     if(get_mouse_move_state()){
         player->base->location.position_x = get_mouse_x()-(al_get_bitmap_width(player->base->image)/2);
@@ -378,12 +379,12 @@ void update_player(){
                     (al_get_bitmap_width(player->base->image)/2);
         int bullet_position_y = player->base->location.position_y;
         make_bullet(player->base->type,player->base->subtype,bullet_position_x,
-                        bullet_position_y);
+                        bullet_position_y,window);
     }
 
 }
 
-void update_ships_objects(){
-    update_player();
+void update_ships_objects(Window_game** window){
+    update_player(window);
     update_bullet();
 }

@@ -17,9 +17,9 @@
  * protótipos necessários (veja a descrição dessas funções mais abaixo, após main)
  ----------------------------------------------------------------------------------*/
 // inicialização
-int basic_alloc();
+int basic_alloc(Window_game** window,Timer_game** timer);
 // finalização
-void basic_dealloc();
+void basic_dealloc(Window_game** window,Timer_game** timer);
 
 /*---------------------------------------------------------------------------------
  * main
@@ -30,13 +30,17 @@ int main()
      * variáveis locais
      ------------------------------------------*/
 
+    // janela
+    Window_game* window;
+    // timer
+    Timer_game* timer;
 
     /*------------------------------------------
      * Inicialização
      -------------------------------------------*/
 
     // se falhar na inicialização, finaliza programa
-    if(!basic_alloc()){
+    if(!basic_alloc(&window,&timer)){
         fprintf(stderr, "falha ao inicializar\n");
         exit(EXIT_FAILURE);
     }
@@ -46,8 +50,8 @@ int main()
      ---------------------------------------------*/
 
     // se falhar e alocar player, desaloca memória alocada e finaliza programa
-    if(!new_player_ship("blue")){
-        basic_dealloc();
+    if(!new_player_ship("blue",&window)){
+        basic_dealloc(&window,&timer);
         exit(EXIT_FAILURE);
     }
 
@@ -60,16 +64,16 @@ int main()
     al_flip_display();
 
     // inicia timer
-    start_timer();
+    start_timer(&timer);
 
     // loop principal do jogo
-    while(!get_window_exit_value()){
+    while(!get_window_exit_value(&window)){
 
         // verifica se algum evento da janela ocorre
-        check_event_queue_window();
+        check_event_queue_window(&window,&timer);
 
         // se a janela puder ser executada no fps configurado...
-        if(get_window_tick()){
+        if(get_window_tick(&window)){
 
             /* -------------------------------------------------------
              * Lógica
@@ -79,7 +83,7 @@ int main()
             check_event_queue_controls();
 
             // atualizar naves (player e enemies) e tiros
-            update_ships_objects();
+            update_ships_objects(&window);
 
             /* --------------------------------------------------------
              * Desenho
@@ -99,7 +103,7 @@ int main()
              -----------------------------------------------------------*/
 
             // configura para que a janela não possa mais ser executada até o próximo fps
-            set_window_tick_false();
+            set_window_tick_false(&window);
 
             // atualiza controles
             update_controls();
@@ -111,7 +115,7 @@ int main()
      --------------------------------------------*/
 
     // desaloca memória alocada
-    basic_dealloc();
+    basic_dealloc(&window,&timer);
 
     // fecha programa com sucesso
     return EXIT_SUCCESS;
@@ -129,7 +133,7 @@ int main()
  * Se sucesso, retorna true
  * Caso contrário, desaloca o que foi alocado e retorna false
  --------------------------------------------------------------------------*/
-int basic_alloc(){
+int basic_alloc(Window_game** window, Timer_game** timer){
 
     // guarda true se sucesso e false se fracasso
     int success = true;
@@ -144,10 +148,10 @@ int basic_alloc(){
     if(success) al_init_image_addon();
 
     // tenta criar janela e eventos relacionados, além do timer
-    if(success && !create_window_game()) success = false;
+    if(success && !create_window_game(window,timer)) success = false;
 
     // tenta inicializar controles e eventos relacionados
-    if(success && !start_controls()) success = false;
+    if(success && !start_controls(window)) success = false;
 
     // tenta carregar atlas
     if(success && !create_atlas()) success = false;
@@ -155,7 +159,7 @@ int basic_alloc(){
     // se não for bem sucedido em alguma inicialização, desaloca o que foi alocado
     if(!success){
         dealloc_controls();
-        dealloc_window();
+        dealloc_window(window,timer);
         dealloc_atlas();
         return success;
     }
@@ -169,7 +173,7 @@ int basic_alloc(){
  * --------------------------------------------------------------------
  * Desaloca player, desaloca controls, desaloca atlas e window
  ----------------------------------------------------------------------*/
-void basic_dealloc(){
+void basic_dealloc(Window_game** window,Timer_game** timer){
 
     // desaloca naves (player e enemies) e tiros
     dealloc_ships_objects();
@@ -178,6 +182,6 @@ void basic_dealloc(){
     // desaloca atlas
     dealloc_atlas();
     // desaloca window
-    dealloc_window();
+    dealloc_window(window,timer);
 
 }

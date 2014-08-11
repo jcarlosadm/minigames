@@ -71,7 +71,7 @@ void register_event_queue_controls();
  * Retorna false se não conseguir inicializar ou alocar memória
  * para o objeto mouse
  --------------------------------------------------------------------*/
-int start_mouse(){
+int start_mouse(Window_game** window){
 
     // se não conseguir instalar mouse, informa e sai com false
     if (!al_install_mouse()){
@@ -81,7 +81,7 @@ int start_mouse(){
 
     // tenta atribuir o cursor padrão do sistema para ser usado
     // (função do módulo window)
-    if (!set_mouse_cursor_window())
+    if (!set_mouse_cursor_window(&(*window)))
         return false;
 
     // aloca objeto Mouse_game
@@ -144,10 +144,10 @@ int start_event_queue_controls(){
  *
  * Inicia mouse e lista de eventos de controle
  ----------------------------------------------------------------*/
-int start_controls(){
+int start_controls(Window_game** window){
 
     // inicia mouse
-    if(!start_mouse()) return false;
+    if(!start_mouse(&(*window))) return false;
     // inicia lista de eventos de controles
     if(!start_event_queue_controls()) return false;
 
