@@ -46,6 +46,10 @@ typedef struct mouse_game{
 
 /* -------------------------------------------------------------------
  * Estrutura que contém os controles e a lista de eventos de controle
+ * -------------------------------------------------------------------
+ * Membros:
+ * Event_queue_controls* event_queue : lista de eventos de controles
+ * Mouse_game* mouse : mouse de jogo
  ---------------------------------------------------------------------*/
 typedef struct controls_game{
     Event_queue_controls* event_queue;
@@ -68,7 +72,7 @@ void register_event_queue_controls(Controls_game** controls);
  * para o objeto mouse
  * ------------------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  * Window_game** window : ponteiro** para Window_game
  --------------------------------------------------------------------*/
 int start_mouse(Controls_game** controls, Window_game** window){
@@ -116,7 +120,7 @@ int start_mouse(Controls_game** controls, Window_game** window){
  * Se não conseguir, retorna false
  * ---------------------------------------------------------------------------
  * Parâmetros:
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  -----------------------------------------------------------------------------*/
 int start_event_queue_controls(Controls_game** controls){
     // tenta alocar objeto Event_queue_controls
@@ -149,8 +153,7 @@ int start_event_queue_controls(Controls_game** controls){
  * Inicia mouse e lista de eventos de controle
  * ---------------------------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  * Window_game** window : ponteiro** para Window_game
  -----------------------------------------------------------------------------*/
 int start_controls(Controls_game** controls, Window_game** window){
@@ -180,7 +183,7 @@ int start_controls(Controls_game** controls, Window_game** window){
  * Desaloca mouse
  * -------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  ---------------------------------------------------*/
 void dealloc_mouse(Controls_game** controls){
     // se mouse estiver alocado...
@@ -198,7 +201,7 @@ void dealloc_mouse(Controls_game** controls){
  * Desaloca lista de eventos de controles
  * ---------------------------------------------------------------------------
  * Parâmetros:
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  -----------------------------------------------------------------------------*/
 void dealloc_event_queue_controls(Controls_game** controls){
     // se a lista de eventos de controles estiver alocada...
@@ -219,8 +222,7 @@ void dealloc_event_queue_controls(Controls_game** controls){
  * Desaloca mouse e lista de eventos de controles
  * --------------------------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  ----------------------------------------------------------------------------*/
 void dealloc_controls(Controls_game** controls){
 
@@ -248,8 +250,7 @@ void dealloc_controls(Controls_game** controls){
  * de controle e executará códigos de acordo com essa ocorrência.
  * ----------------------------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  ------------------------------------------------------------------------------*/
 void check_event_queue_controls(Controls_game** controls){
 
@@ -294,7 +295,7 @@ void check_event_queue_controls(Controls_game** controls){
  * do jogo
  * ----------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  ------------------------------------------------------*/
 void update_controls(Controls_game** controls){
     // atualiza estado anterior do mouse
@@ -308,7 +309,7 @@ void update_controls(Controls_game** controls){
  * do mouse
  * ----------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  ------------------------------------------------------*/
 int get_mouse_move_state(Controls_game** controls){
     return (*controls)->mouse->move_state;
@@ -318,7 +319,7 @@ int get_mouse_move_state(Controls_game** controls){
  * Pega coordenada x do mouse
  * ----------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  ------------------------------------------------------*/
 int get_mouse_x(Controls_game** controls){
     return (*controls)->mouse->position_x;
@@ -328,7 +329,7 @@ int get_mouse_x(Controls_game** controls){
  * Pega coordenada y do mouse
  * ----------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  ------------------------------------------------------*/
 int get_mouse_y(Controls_game** controls){
     return (*controls)->mouse->position_y;
@@ -340,7 +341,7 @@ int get_mouse_y(Controls_game** controls){
  * Registra eventos do mouse
  * ---------------------------------------------------------------------------------
  * Parâmetros:
- * Event_queue_controls** event_queue : ponteiro** para Event_queue_controls
+ * Controls_game** controls : ponteiro** para Controls_game
  -----------------------------------------------------------------------------------*/
 void register_event_queue_controls(Controls_game** controls){
     al_register_event_source((*controls)->event_queue->event_queue, al_get_mouse_event_source());
@@ -350,7 +351,7 @@ void register_event_queue_controls(Controls_game** controls){
  * Verifica se houve clique único (não segurou)
  * ---------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  -----------------------------------------------------------*/
 int mouseIsClicked(Controls_game** controls){
     // se o estado anterior é false e o atual é true, houve clique único
@@ -364,7 +365,7 @@ int mouseIsClicked(Controls_game** controls){
  * Verifica se segurou o mouse
  * ---------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  -----------------------------------------------------------*/
 int mouseIsPressed(Controls_game** controls){
     // se o estado anterior é true e o atual é true, o mouse
@@ -379,7 +380,7 @@ int mouseIsPressed(Controls_game** controls){
  * Verifica se soltou o clique do mouse
  * ------------------------------------------------------------
  * Parâmetros:
- * Mouse_game** mouse : ponteiro** para Mouse_game
+ * Controls_game** controls : ponteiro** para Controls_game
  --------------------------------------------------------------*/
 int mouseIsReleased(Controls_game** controls){
     // se o estado anterior é true e o atual é false,

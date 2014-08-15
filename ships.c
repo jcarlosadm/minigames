@@ -258,22 +258,14 @@ int make_bullet(Bullets** bullets,const char* type, const char* subtype, float p
     bullet->x = position_x - al_get_bitmap_width(bullet->image)/2;
     bullet->y = position_y - al_get_bitmap_height(bullet->image);
 
-    if((*bullets)->firstBullet == NULL){
-        bullet->nextBullet = NULL;
-        bullet->previousBullet = NULL;
 
-        (*bullets)->firstBullet = bullet;
-    }
+    bullet->nextBullet = (*bullets)->firstBullet;
+    bullet->previousBullet = NULL;
 
-    else{
-
-        bullet->previousBullet = NULL;
-        bullet->nextBullet = (*bullets)->firstBullet;
-
+    if((*bullets)->firstBullet != NULL)
         (*bullets)->firstBullet->previousBullet = bullet;
-        (*bullets)->firstBullet = bullet;
 
-    }
+    (*bullets)->firstBullet = bullet;
 
     return true;
 

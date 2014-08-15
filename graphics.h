@@ -61,7 +61,7 @@ typedef struct graphics_game Graphics_game;
  * Retorna false se não conseguir
  * ----------------------------------------------------------
  * Parâmetros:
- * Atlas_game** atlas : ponteiro*** para Atlas_game
+ * Graphics_game** graphics : ponteiro** para Graphics_game
  ------------------------------------------------------------*/
 int create_graphics(Graphics_game** graphics);
 
@@ -78,7 +78,7 @@ int create_graphics(Graphics_game** graphics);
  * Use essa função após o loop principal do jogo
  * ---------------------------------------------------------------
  * Parâmetros:
- * Atlas_game** atlas : ponteiro** para Atlas_game
+ * Graphics_game** graphics : ponteiro** para Graphics_game
  -----------------------------------------------------------------*/
 void dealloc_graphics(Graphics_game** graphics);
 
@@ -96,7 +96,7 @@ void dealloc_graphics(Graphics_game** graphics);
  * Parâmetros:
  * const char* bitmap_name : nome do bitmap presente no atlas
  * Window_game** window : ponteiro** para Window_game
- * Atlas_game** atlas : ponteiro** para Atlas_game
+ * Graphics_game** graphics : ponteiro** para Graphics_game
  ---------------------------------------------------------------------*/
 ALLEGRO_BITMAP* create_bitmap_from_atlas(const char* bitmap_name,Window_game** window,
         Graphics_game** graphics);

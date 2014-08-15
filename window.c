@@ -33,6 +33,7 @@ typedef struct timer_game{
  * Membros:
  * ALLEGRO_DISPLAY *window : A janela propriamente dita
  * ALLEGRO_EVENT_QUEUE *event_queue_window : guarda objeto ALLEGRO_EVENT_QUEUE do allegro
+ * Timer_game *timer : objeto Timer_game
  *
  * int exit : controla se sai do loop principal do jogo (true or false)
  * int tick : controla a execução do loop principal de acordo com os frames
@@ -69,7 +70,6 @@ int build_timer(Window_game** window);
  * ---------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro*** para Window_game
- * Timer_game** timer : ponteiro*** para Timer_game
  -----------------------------------------------------------------*/
 int create_window_game(Window_game** window){
 
@@ -183,7 +183,7 @@ int generate_event_queue_window(Window_game **window){
  * Retorna false se não conseguir
  * -----------------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro** para Timer_game
+ * Window_game** window : ponteiro** para Window_game
  -------------------------------------------------------------------------*/
 int build_timer(Window_game** window){
 
@@ -235,7 +235,7 @@ int build_timer(Window_game** window){
  * Timer_game
  * -------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro** para Timer_game
+ * Window_game** window : ponteiro** para Window_game
  ---------------------------------------------------------------*/
 void dealloc_timer(Window_game** window){
     // se timer estiver alocado
@@ -259,7 +259,6 @@ void dealloc_timer(Window_game** window){
  * ----------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro** para Window_game
- * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------*/
 void dealloc_window(Window_game** window){
     // se window estiver alocada
@@ -289,7 +288,7 @@ void dealloc_window(Window_game** window){
  * Inicia timer
  * ------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro** para Timer_game
+ * Window_game** window : ponteiro** para Window_game
  --------------------------------------------------------------*/
 void start_timer(Window_game** window){
     al_start_timer((*window)->timer->timer);
@@ -379,7 +378,6 @@ void register_event_queue_window(Window_game** window){
  * --------------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro** para Window_game
- * Timer_game** timer : ponteiro** para Timer_game
  ----------------------------------------------------------------------*/
 void check_event_queue_timer(Window_game** window){
 
@@ -405,7 +403,6 @@ void check_event_queue_timer(Window_game** window){
  * ----------------------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro** para Window_game
- * Timer_game** timer : ponteiro** para Timer_game
  ------------------------------------------------------------------------------*/
 void check_event_queue_window(Window_game** window){
 

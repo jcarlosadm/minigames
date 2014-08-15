@@ -65,6 +65,10 @@ enum{
  * Estrutura Window_game
  * --------------------------------------------------
  * A janela de jogo
+ *
+ * Possui objeto Timer, que controla a execução da
+ * janela no FPS configurado, lista de eventos
+ * para a janela, e lista de eventos para o timer.
  ----------------------------------------------------*/
 typedef struct window_game Window_game;
 
@@ -85,11 +89,9 @@ typedef struct window_game Window_game;
  * Retorna false se não for bem sucedido
  * ----------------------------------------------------------------
  * Parâmetros:
- * Window_game** window : ponteiro*** para Window_game
- * Timer_game** timer : ponteiro*** para Timer_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 int create_window_game(Window_game** window);
-
 
 
 /**************************************************
@@ -108,7 +110,6 @@ int create_window_game(Window_game** window);
  * -----------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro** para Window_game
- * Timer_game** timer : ponteiro** para Timer_game
  -------------------------------------------------------------------*/
 void dealloc_window(Window_game** window);
 
@@ -129,7 +130,7 @@ void dealloc_window(Window_game** window);
  * segundo do jogo
  * ----------------------------------------------------------------
  * Parâmetros:
- * Timer_game** timer : ponteiro** para Timer_game
+ * Window_game** window : ponteiro** para Window_game
  ------------------------------------------------------------------*/
 void start_timer(Window_game** window);
 
@@ -204,7 +205,6 @@ int set_mouse_cursor_window(Window_game** window);
  * -------------------------------------------------------------
  * Parâmetros:
  * Window_game** window : ponteiro** para Window_game
- * Timer_game** timer : ponteiro** para Timer_game
  ---------------------------------------------------------------*/
 void check_event_queue_window(Window_game** window);
 

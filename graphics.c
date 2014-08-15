@@ -40,6 +40,12 @@ typedef struct atlas_game{
     ALLEGRO_BITMAP* atlas;
 }Atlas_game;
 
+/* --------------------------------------------------------
+ * Estrutura que contém os objetos gráficos do game
+ * --------------------------------------------------------
+ * Membros:
+ * Atlas_game* atlas: ponteiro para objeto Atlas_game
+ ----------------------------------------------------------*/
 typedef struct graphics_game{
     Atlas_game* atlas;
 }Graphics_game;
@@ -56,7 +62,7 @@ typedef struct graphics_game{
  * Retorna false se não conseguir
  * -------------------------------------------------------------
  * Parâmetros:
- * Atlas_game** atlas : ponteiro*** para Atlas_game
+ * Graphics_game** graphics : ponteiro** para Graphics_game
  ---------------------------------------------------------------*/
 int create_atlas(Graphics_game** graphics){
     // tenta alocar objeto atlas
@@ -82,20 +88,29 @@ int create_atlas(Graphics_game** graphics){
 
 }
 
+/* --------------------------------------------------------
+ * Carrega objetos gráficos
+ * --------------------------------------------------------
+ * Retorna false se houver alguma falha
+ ----------------------------------------------------------*/
 int create_graphics(Graphics_game** graphics){
 
+    // aloca objeto Graphics_game
     (*graphics) = malloc(sizeof(Graphics_game));
+    // se não conseguir, informa e sai com false
     if(!(*graphics)){
         puts("falha ao tentar alocar objeto graphics");
         return false;
     }
 
+    // se não conseguir alocar objeto atlas, desaloca graphics e sai com false
     if(!create_atlas(graphics)){
         free(*graphics);
         (*graphics) = NULL;
         return false;
     }
 
+    // operações bem sucedidas
     return true;
 }
 
@@ -110,7 +125,7 @@ int create_graphics(Graphics_game** graphics){
  * Desaloca objeto atlas
  * ----------------------------------------------------------
  * Parâmetros:
- * Atlas_game** atlas : ponteiro** para Atlas_game
+ * Graphics_game** graphics : ponteiro** para Graphics_game
  ------------------------------------------------------------*/
 void dealloc_atlas(Graphics_game** graphics){
     // se o objeto atlas estiver alocado...
@@ -125,14 +140,21 @@ void dealloc_atlas(Graphics_game** graphics){
     }
 }
 
+/* ------------------------------------------------------------
+ * Desaloca objeto Graphics_game
+ --------------------------------------------------------------*/
 void dealloc_graphics(Graphics_game** graphics){
 
+    // se graphics não estiver alocado, sai da função
     if(!(*graphics)) return;
 
+    // desaloca atlas
     dealloc_atlas(graphics);
 
+    // desaloca graphics
     free(*graphics);
 
+    // aponta para nulo
     (*graphics) = NULL;
 }
 
