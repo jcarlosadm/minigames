@@ -6,71 +6,139 @@
 
 #include "ships.h"
 
-/*******************************************
- * Tipos
- *******************************************/
+/****************************************************
+ * **************************************************
+ * Estruturas
+ * **************************************************
+ ****************************************************/
 
-
-// Parte da nave que descreve seus atributos
+/* --------------------------------------------
+ * Parte da nave que descreve seus atributos
+ * --------------------------------------------
+ * Membros:
+ * int power : poder (especial para nave, poder de tiro
+ *              para tiro)
+ * float speed : velocidade
+ ----------------------------------------------*/
 typedef struct attributes{
-    int power; // poder de tiro
-    float speed; // velocidade
-}Attributes;
-
-// Parte da nave que determina a sua localização
-typedef struct location{
-    float position_x; // coordenada x
-    float position_y; // coordenada y
-}Location;
-
-// Parte da nave que determina a sua dimensão
-typedef struct dimension{
-    float width; // largura
-    float height; // altura
-}Dimension;
-
-typedef struct bullet{
-    char type[20]; // player ou enemy
-    char subtype[20]; // subtipo de tiro
-
     int power;
     float speed;
+}Attributes;
 
-    int active;
-    float x;
-    float y;
-    ALLEGRO_BITMAP *image; // imagem do tiro
+/* ---------------------------------------------------
+ * Parte da nave que determina a sua localização
+ * ---------------------------------------------------
+ * Membros:
+ * float position_x : coordenada x
+ * float position_y : coordenada y
+ -----------------------------------------------------*/
+typedef struct location{
+    float position_x;
+    float position_y;
+}Location;
 
+/* --------------------------------------------------
+ * Parte da nave que determina a sua dimensão
+ * --------------------------------------------------
+ * Membros:
+ * float width : largura
+ * float height : altura
+ ----------------------------------------------------*/
+typedef struct dimension{
+    float width;
+    float height;
+}Dimension;
+
+/* ----------------------------------------------------
+ * Descreve um único tiro
+ * ----------------------------------------------------
+ * Membros:
+ * char type[20] : tipo do tiro (player ou enemy)
+ * char subtype[20] : subtipo do tiro (variável)
+ *
+ * Attributes attr : atributos do tiro
+ * Location location : posição x e y do tiro
+ * Dimension dimension : dimensões do tiro
+ *
+ * ALLEGRO_BITMAP *image : imagem do tiro
+ *
+ * Bullet* nextBullet : ponteiro para o próximo tiro
+ * Bullet* previousBullet : ponteiro para o tiro anterior
+ ------------------------------------------------------*/
+typedef struct bullet{
+    // tipo e subtipo
+    char type[20];
+    char subtype[20];
+
+    // caractesrísticas
+    Attributes attr;
+    Location location;
+    Dimension dimension;
+
+    // imagem
+    ALLEGRO_BITMAP *image;
+
+    // ponteiros para outros tiros
     Bullet* nextBullet;
     Bullet* previousBullet;
 
 }Bullet;
 
+/* ----------------------------------------------------
+ * Lista de tiros
+ * ----------------------------------------------------
+ * Membros:
+ * Bullet* firstBullet : ponteiro para o primeiro tiro
+ ------------------------------------------------------*/
 typedef struct bullets{
     Bullet* firstBullet;
 }Bullets;
 
-// Descreve a nave, usada pelo inimigo e como base do player
+/* ----------------------------------------------------
+ * Descreve a base comum a todas as naves
+ * ----------------------------------------------------
+ * Membros:
+ * char type[20] : tipo da nave (player ou enemy)
+ * char subtype[20] : subtipo da nave (variável)
+ * char bullet_subtype[20] : subtipo do tiro atual (variável)
+ *
+ * Attributes attr : atributos da nave (power, speed)
+ * Location location : coordenadas x e y
+ * Dimension dimension : dimensões da nave
+ *
+ * ALLEGRO_BITMAP* image : imagem da nave
+ ------------------------------------------------------*/
 typedef struct ship{
-    char type[20]; // player ou enemy
-    char subtype[20]; // subtipo de player ou enemy
-    char bullet_subtype[20]; // subtipo do seu tiro
 
-    Attributes attr; // atributos da nave
-    Location location; // coordenadas x e y da nave
-    Dimension dimension; // largura e altura da nave
+    // definições de tipos
+    char type[20];
+    char subtype[20];
+    char bullet_subtype[20];
 
-    ALLEGRO_BITMAP *image; // imagem da nave
+    // características
+    Attributes attr;
+    Location location;
+    Dimension dimension;
+
+    // imagens
+    ALLEGRO_BITMAP *image;
 }Ship;
 
-// tipo Ship usado pelo player
+/* ----------------------------------------------------
+ * estrutura usada pela nave do player
+ * ----------------------------------------------------
+ * Base:
+ * Ship* base : estrutura básica da nave
+ ------------------------------------------------------*/
 typedef struct player_ship{
     Ship* base;
 }Player_ship;
 
 
 /*******************************************
+ * *****************************************
  * Construtores - alocação de memória
+ * *****************************************
  *******************************************/
 
 // define atributos básicos (usado nos construtores)
@@ -215,7 +283,6 @@ int make_bullet(Bullets** bullets,const char* type, const char* subtype, float p
         return false;
     }
 
-    bullet->active = true;
     strcpy(bullet->type,type);
     strcpy(bullet->subtype,subtype);
 
@@ -246,17 +313,17 @@ int make_bullet(Bullets** bullets,const char* type, const char* subtype, float p
     }
 
     node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
-    bullet->power = atoi(mxmlElementGetAttr(node,"power"));
-    bullet->speed = atof(mxmlElementGetAttr(node,"speed"));
-    printf("power %d, speed %.0f \n",bullet->power,bullet->speed);
+    bullet->attr->power = atoi(mxmlElementGetAttr(node,"power"));
+    bullet->attr->speed = atof(mxmlElementGetAttr(node,"speed"));
+    printf("power %d, speed %.0f \n",bullet->attr->power,bullet->attr->speed);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
     bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,graphics);
 
     mxmlDelete(tree);
 
-    bullet->x = position_x - al_get_bitmap_width(bullet->image)/2;
-    bullet->y = position_y - al_get_bitmap_height(bullet->image);
+    bullet->location->position_x = position_x - al_get_bitmap_width(bullet->image)/2;
+    bullet->location->position_y = position_y - al_get_bitmap_height(bullet->image);
 
 
     bullet->nextBullet = (*bullets)->firstBullet;
@@ -367,7 +434,7 @@ void draw_bullet(Bullets** bullets){
     Bullet* bullet = (*bullets)->firstBullet;
 
     while(bullet){
-        al_draw_bitmap(bullet->image,bullet->x,bullet->y,0);
+        al_draw_bitmap(bullet->image,bullet->location->position_x,bullet->location->position_y,0);
         bullet = bullet->nextBullet;
     }
 
@@ -411,9 +478,9 @@ void update_bullets(Bullets** bullets){
 
         nextBullet = bullet->nextBullet;
 
-        bullet->y -= 6;
+        bullet->location->position_y -= 6;
 
-        if(bullet->y < 5){
+        if(bullet->location->position_y < 5){
 
             if(bullet->previousBullet == NULL){
 
