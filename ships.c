@@ -313,17 +313,17 @@ int make_bullet(Bullets** bullets,const char* type, const char* subtype, float p
     }
 
     node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
-    bullet->attr->power = atoi(mxmlElementGetAttr(node,"power"));
-    bullet->attr->speed = atof(mxmlElementGetAttr(node,"speed"));
-    printf("power %d, speed %.0f \n",bullet->attr->power,bullet->attr->speed);
+    bullet->attr.power = atoi(mxmlElementGetAttr(node,"power"));
+    bullet->attr.speed = atof(mxmlElementGetAttr(node,"speed"));
+    printf("power %d, speed %.0f \n",bullet->attr.power,bullet->attr.speed);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
     bullet->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,graphics);
 
     mxmlDelete(tree);
 
-    bullet->location->position_x = position_x - al_get_bitmap_width(bullet->image)/2;
-    bullet->location->position_y = position_y - al_get_bitmap_height(bullet->image);
+    bullet->location.position_x = position_x - al_get_bitmap_width(bullet->image)/2;
+    bullet->location.position_y = position_y - al_get_bitmap_height(bullet->image);
 
 
     bullet->nextBullet = (*bullets)->firstBullet;
@@ -434,7 +434,7 @@ void draw_bullet(Bullets** bullets){
     Bullet* bullet = (*bullets)->firstBullet;
 
     while(bullet){
-        al_draw_bitmap(bullet->image,bullet->location->position_x,bullet->location->position_y,0);
+        al_draw_bitmap(bullet->image,bullet->location.position_x,bullet->location.position_y,0);
         bullet = bullet->nextBullet;
     }
 
@@ -478,9 +478,9 @@ void update_bullets(Bullets** bullets){
 
         nextBullet = bullet->nextBullet;
 
-        bullet->location->position_y -= 6;
+        bullet->location.position_y -= 6;
 
-        if(bullet->location->position_y < 5){
+        if(bullet->location.position_y < 5){
 
             if(bullet->previousBullet == NULL){
 
