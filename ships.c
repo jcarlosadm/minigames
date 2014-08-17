@@ -141,24 +141,8 @@ typedef struct player_ship{
  * *****************************************
  *******************************************/
 
-// define atributos básicos (usado nos construtores)
-void build_Attr(Attributes* attr, int power, int speed){
-    attr->power = power;
-    attr->speed = speed;
-}
-
-// inicializa localização e dimensões
-void initialize_loc_dim(Location* loc, Dimension* dim, float position_x,
-        float position_y, float width, float height){
-    loc->position_x = position_x;
-    loc->position_y = position_y;
-    dim->height = height;
-    dim->width = width;
-}
-
 // aloca nave inimiga ou base para o player
 Ship* new_ship(const char *type, const char *subtype,Window_game** window,Graphics_game** graphics){
-
 
     FILE * file;
     mxml_node_t *tree;
@@ -167,7 +151,7 @@ Ship* new_ship(const char *type, const char *subtype,Window_game** window,Graphi
     Ship *ship = (Ship*) malloc (sizeof(Ship));
 
     if(ship == NULL){
-        fprintf(stderr, "falha ao alocar objeto Ship\n");
+        error_game_message("falha ao alocar objeto Ship",__FILE__, __LINE__);
         return NULL;
     }
 
@@ -210,17 +194,22 @@ Ship* new_ship(const char *type, const char *subtype,Window_game** window,Graphi
     }
 
     node = mxmlFindElement(node,node,"Attributes",NULL,NULL,MXML_DESCEND);
-    build_Attr(&(ship->attr),atof(mxmlElementGetAttr(node,"power")),
-            atof(mxmlElementGetAttr(node,"speed")));
-    printf("power %d, speed %.0f \n",ship->attr.power,ship->attr.speed);
+    ship->attr.power = atof(mxmlElementGetAttr(node,"power"));
+    ship->attr.speed = atof(mxmlElementGetAttr(node,"speed"));
+
+    if(DEBUG_ON)
+        printf("ship: power %d, speed %.0f \n",ship->attr.power,ship->attr.speed);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
     ship->image = create_bitmap_from_atlas(mxmlElementGetAttr(node,"name"),window,graphics);
 
     node = mxmlWalkNext(node, tree, MXML_DESCEND);
-    initialize_loc_dim(&(ship->location),&(ship->dimension),atof(mxmlElementGetAttr(node,"x")),
-                atof(mxmlElementGetAttr(node,"y")), al_get_bitmap_width(ship->image),
-                al_get_bitmap_height(ship->image));
+
+    ship->location.position_x = atof(mxmlElementGetAttr(node,"x"));
+    ship->location.position_y = atof(mxmlElementGetAttr(node,"y"));
+    ship->dimension.width = al_get_bitmap_width(ship->image);
+    ship->dimension.height = al_get_bitmap_height(ship->image);
+
     printf("x %.0f, y %.0f, w %.0f, h %.0f \n",ship->location.position_x,ship->location.position_y,
             ship->dimension.width,ship->dimension.height);
 

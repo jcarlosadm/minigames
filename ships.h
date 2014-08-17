@@ -16,6 +16,7 @@
 // mini xml
 #include <mxml.h>
 // módulo do jogo
+#include "error_debug_game.h"
 #include "graphics.h"
 #include "window.h"
 #include "controls.h"

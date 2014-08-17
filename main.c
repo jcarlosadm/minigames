@@ -8,6 +8,7 @@
 // allegro
 #include <allegro5/allegro.h>
 // módulos do jogo
+#include "error_debug_game.h"
 #include "graphics.h"
 #include "window.h"
 #include "ships.h"
