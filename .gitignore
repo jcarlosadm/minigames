@@ -1,0 +1,13 @@
+**/bin
+**/bin/*
+**/info
+**/info/*
+**/objects
+**/objects/*
+**/resources
+**/resources/*
+**/.settings/*
+**/.settings
+
+**/.cproject
+**/.project
